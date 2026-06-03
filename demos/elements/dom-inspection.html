@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elements Panel - DOM Inspection Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .demo-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 5px 5px 5px 0;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .box-demo {
+            background: lightblue;
+            padding: 20px;
+            margin: 10px 0;
+            border: 2px solid blue;
+            width: 200px;
+        }
+        .hidden {
+            display: none;
+        }
+        .interactive-list {
+            list-style: none;
+            padding: 0;
+        }
+        .interactive-list li {
+            padding: 10px;
+            margin: 5px 0;
+            background: #e9ecef;
+            border-left: 3px solid #007bff;
+        }
+        .interactive-list li:hover {
+            background: #dee2e6;
+        }
+        img {
+            max-width: 100%;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Elements Panel - DOM Inspection and Manipulation</h1>
+    <p><strong>Instructions:</strong> Right-click on elements and select "Inspect" to see them in the Elements panel.</p>
+
+    <div class="demo-section">
+        <h2>1. Inspect and Edit Elements</h2>
+        <p id="target-paragraph">This is a paragraph. Inspect it and try editing the text directly in the Elements panel.</p>
+        <button onclick="addElement()">Add New Element</button>
+        <button onclick="removeLastElement()">Remove Last Element</button>
+        <div id="container"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>2. Box Model and Measurements</h2>
+        <p>Inspect this box to see margin, padding, border, and content in the Box Model panel.</p>
+        <div class="box-demo">
+            Box Model Demo
+            <br>(Padding: 20px, Border: 2px, Margin: varies)
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>3. CSS Inspection</h2>
+        <p style="color: red; font-weight: bold; text-decoration: underline;">Inspect this text to see its styles in the Styles panel</p>
+        <p>Try editing the CSS properties directly in DevTools and see changes live.</p>
+    </div>
+
+    <div class="demo-section">
+        <h2>4. Interactive List</h2>
+        <p>Inspect list items to see their structure and attributes:</p>
+        <ul class="interactive-list">
+            <li data-id="1" class="active">Item 1 - Active</li>
+            <li data-id="2">Item 2 - Normal</li>
+            <li data-id="3">Item 3 - Normal</li>
+            <li data-id="4">Item 4 - Normal</li>
+        </ul>
+    </div>
+
+    <div class="demo-section">
+        <h2>5. Hidden Elements</h2>
+        <button onclick="toggleHidden()">Toggle Hidden Element</button>
+        <p>Click button to show/hide element. In Elements panel, press H to hide without clicking button.</p>
+        <div id="hidden-element" class="hidden">
+            This element can be hidden/shown. Use H key in Elements panel to toggle.
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>6. Event Listeners</h2>
+        <button id="event-demo-btn">Click me to trigger events</button>
+        <p>Inspect the button and look at the Event Listeners tab to see all attached handlers.</p>
+        <div id="event-output"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>7. Attributes</h2>
+        <input type="text" id="demo-input" 
+               class="demo-class" 
+               data-role="form-field"
+               data-validation="email"
+               placeholder="Inspect this input to see its attributes"
+               value="Test value">
+        <p>Inspect the input to see its attributes. Try editing attributes in the Elements panel.</p>
+    </div>
+
+    <div class="demo-section">
+        <h2>8. DOM Hierarchy</h2>
+        <div id="parent" style="border: 2px solid green; padding: 10px; margin: 10px 0;">
+            Parent div - Inspect to see hierarchy
+            <div id="child" style="border: 2px solid blue; padding: 10px; margin: 10px 0;">
+                Child div
+                <span id="grandchild" style="color: red; font-weight: bold;">Grandchild span</span>
+            </div>
+        </div>
+        <p>Expand each level in the Elements panel to see the DOM tree structure.</p>
+    </div>
+
+    <script>
+        let elementCount = 0;
+
+        function addElement() {
+            elementCount++;
+            const div = document.createElement('div');
+            div.textContent = `Dynamically added element ${elementCount}`;
+            div.style.cssText = 'background: lightyellow; padding: 10px; margin: 5px 0; border: 1px solid orange;';
+            document.getElementById('container').appendChild(div);
+        }
+
+        function removeLastElement() {
+            const container = document.getElementById('container');
+            if (container.lastChild) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        function toggleHidden() {
+            const element = document.getElementById('hidden-element');
+            element.classList.toggle('hidden');
+        }
+
+        // Event listeners for event listener demo
+        const eventBtn = document.getElementById('event-demo-btn');
+        const eventOutput = document.getElementById('event-output');
+
+        eventBtn.addEventListener('click', function(e) {
+            eventOutput.textContent = 'Button clicked!';
+            console.log('Click event fired');
+        });
+
+        eventBtn.addEventListener('mouseover', function(e) {
+            eventBtn.style.background = '#28a745';
+        });
+
+        eventBtn.addEventListener('mouseout', function(e) {
+            eventBtn.style.background = '#007bff';
+        });
+
+        eventBtn.addEventListener('dblclick', function(e) {
+            eventOutput.textContent = 'Double click detected!';
+        });
+
+        // DOM mutation example
+        document.getElementById('demo-input').addEventListener('input', function(e) {
+            console.log('Input value changed:', e.target.value);
+        });
+    </script>
+</body>
+</html>

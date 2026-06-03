@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Console Panel Demo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f6f8fb;
+            color: #202124;
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #dfe3e8;
+            padding: 24px;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin-top: 0;
+        }
+
+        h2 {
+            border-bottom: 1px solid #dfe3e8;
+            padding-bottom: 8px;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            background: #1769aa;
+            border: 0;
+            border-radius: 4px;
+            color: #ffffff;
+            cursor: pointer;
+            margin: 4px 6px 4px 0;
+            padding: 8px 14px;
+        }
+
+        button:hover,
+        button:focus-visible {
+            background: #0f4f86;
+        }
+
+        code,
+        pre {
+            background: #eef2f7;
+            border-radius: 4px;
+        }
+
+        code {
+            padding: 2px 5px;
+        }
+
+        pre {
+            overflow-x: auto;
+            padding: 12px;
+        }
+
+        .section {
+            background: #ffffff;
+            border: 1px solid #dfe3e8;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            padding: 18px;
+        }
+
+        .hint {
+            color: #5f6368;
+            font-size: 0.95rem;
+        }
+
+        .status {
+            background: #e8f0fe;
+            border-left: 4px solid #1769aa;
+            margin-top: 10px;
+            padding: 10px;
+        }
+
+        .generated-log {
+            background: #fff4bf;
+            border: 1px solid #d4a900;
+            margin-top: 8px;
+            padding: 8px;
+        }
+
+        .utility-targets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+        }
+
+        .utility-card {
+            border: 1px solid #dfe3e8;
+            border-radius: 4px;
+            padding: 12px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Console Panel Demo</h1>
+        <p>Open DevTools Console with <strong>Ctrl+Shift+J</strong> or <strong>Cmd+Option+J</strong>, then click each demo in order.</p>
+    </header>
+
+    <main>
+        <section class="section" id="getting-started">
+            <h2>1. Getting Started</h2>
+            <button type="button" onclick="demoExpressionResult()">Create Page State</button>
+            <p>After clicking, run <code>window.demoState</code> in the Console to inspect the page context.</p>
+            <div id="state-output" class="status">No page state created yet.</div>
+        </section>
+
+        <section class="section" id="live-expressions">
+            <h2>2. Live Expressions</h2>
+            <button type="button" onclick="incrementLiveCounter()">Increment Counter</button>
+            <button type="button" onclick="addGeneratedLog()">Add DOM Log Row</button>
+            <p>Create live expressions with the eye icon and try:</p>
+            <pre><code>window.demoState.clicks
+window.demoState.lastAction
+document.querySelectorAll('.generated-log').length
+document.activeElement</code></pre>
+            <div id="generated-log-container"></div>
+        </section>
+
+        <section class="section" id="console-methods">
+            <h2>3. Console Methods</h2>
+            <button type="button" onclick="demoBasicLogging()">Basic Log Levels</button>
+            <button type="button" onclick="demoCount()">Count Calls</button>
+            <button type="button" onclick="demoTiming()">Time Work</button>
+            <button type="button" onclick="demoTrace()">Trace Call Stack</button>
+            <p class="hint">Use the Console level filters to show only info, warnings, or errors.</p>
+        </section>
+
+        <section class="section" id="styling-output">
+            <h2>4. Styling Console Output</h2>
+            <button type="button" onclick="demoStyling()">Styled Output</button>
+            <p>Uses <code>%c</code> placeholders and CSS strings.</p>
+        </section>
+
+        <section class="section" id="organizing-messages">
+            <h2>5. Organizing Messages</h2>
+            <button type="button" onclick="demoGroups()">Grouped Messages</button>
+            <button type="button" onclick="demoTable()">Display Table</button>
+            <p>Groups keep noisy debug output readable, and tables make arrays of objects easier to compare.</p>
+        </section>
+
+        <section class="section" id="filtering-searching">
+            <h2>6. Filtering and Searching</h2>
+            <button type="button" onclick="demoLevelFilters()">Generate Mixed Levels</button>
+            <button type="button" onclick="demoUrlFilter()">Generate URL Filter Logs</button>
+            <p>Try these in the Console filter box:</p>
+            <pre><code>url:01-console-demo.html
+url:session-01-console-url-filter-demo.js
+-url:extension</code></pre>
+            <p class="hint">Use <code>Ctrl+F</code> or <code>Cmd+F</code> to search visible Console messages.</p>
+        </section>
+
+        <section class="section" id="understand-errors">
+            <h2>7. Understand Errors and Warnings</h2>
+            <button type="button" onclick="demoUnderstandWarning()">Create Warning</button>
+            <button type="button" onclick="demoUnderstandError()">Throw Error</button>
+            <button type="button" onclick="demoFailedFetch()">Failed Fetch</button>
+            <p>Hover a supported warning or error message and click <strong>Understand this warning</strong> or <strong>Understand this error</strong>.</p>
+            <p class="hint">Console Insights may require Chrome sign-in, English (US), AI Innovations enabled, and a supported region.</p>
+        </section>
+
+        <section class="section" id="utility-functions">
+            <h2>8. Console Utility Functions</h2>
+            <p>Select one card in Elements, then try these commands in the Console:</p>
+            <pre><code>$0
+$('button')
+$$('.utility-card')
+copy(window.demoState)
+getEventListeners(document.querySelector('#utility-click-target'))
+monitorEvents(document.querySelector('#utility-click-target'), 'click')</code></pre>
+            <div class="utility-targets">
+                <article class="utility-card" data-role="utility-card">
+                    <h3>Utility Card A</h3>
+                    <p>Use <code>$$('.utility-card')</code>.</p>
+                </article>
+                <article class="utility-card" data-role="utility-card">
+                    <h3>Utility Card B</h3>
+                    <p>Inspect this and use <code>$0</code>.</p>
+                </article>
+            </div>
+            <button type="button" id="utility-click-target">Event Listener Target</button>
+        </section>
+
+        <section class="section" id="performance-profiling">
+            <h2>9. Performance Profiling</h2>
+            <button type="button" onclick="demoNestedTiming()">Nested Timers</button>
+            <button type="button" onclick="expensiveFunction()">Run Expensive Function</button>
+            <p>Try <code>profile('demo')</code>, click the expensive function, then run <code>profileEnd('demo')</code>.</p>
+        </section>
+
+        <section class="section" id="advanced-debugging">
+            <h2>10. Advanced Debugging</h2>
+            <button type="button" onclick="processDemoData({ source: 'button', value: Math.random() })">Call processDemoData()</button>
+            <p>Run <code>debug(processDemoData)</code>, click the button, then run <code>undebug(processDemoData)</code>.</p>
+        </section>
+    </main>
+
+    <script>
+        window.demoState = {
+            clicks: 0,
+            lastAction: 'page loaded',
+            records: []
+        };
+
+        function updateState(action) {
+            window.demoState.lastAction = action;
+            document.getElementById('state-output').textContent = `Last action: ${action}`;
+        }
+
+        function demoExpressionResult() {
+            window.demoState.records.push({ type: 'created', time: new Date().toISOString() });
+            updateState('created demo state');
+            console.log('Page context is available as window.demoState:', window.demoState);
+        }
+
+        function incrementLiveCounter() {
+            window.demoState.clicks += 1;
+            updateState(`counter is ${window.demoState.clicks}`);
+        }
+
+        function addGeneratedLog() {
+            const row = document.createElement('div');
+            row.className = 'generated-log';
+            row.textContent = `DOM log row ${document.querySelectorAll('.generated-log').length + 1}`;
+            document.getElementById('generated-log-container').appendChild(row);
+            updateState('added DOM log row');
+        }
+
+        function demoBasicLogging() {
+            console.log('This is a log message');
+            console.info('This is an info message');
+            console.warn('This is a warning message');
+            console.error('This is an error message');
+            updateState('generated basic log levels');
+        }
+
+        function demoCount() {
+            console.count('demo-counter');
+            updateState('incremented console.count label');
+        }
+
+        function demoTiming() {
+            console.time('calculation');
+            let sum = 0;
+            for (let i = 0; i < 1000000; i += 1) {
+                sum += i;
+            }
+            console.timeEnd('calculation');
+            console.log('Calculation result:', sum);
+            updateState('timed calculation');
+        }
+
+        function demoTrace() {
+            firstTraceStep();
+        }
+
+        function firstTraceStep() {
+            secondTraceStep();
+        }
+
+        function secondTraceStep() {
+            console.trace('Trace from nested function call');
+            updateState('generated stack trace');
+        }
+
+        function demoStyling() {
+            const base = 'padding: 4px 8px; border-radius: 3px; font-weight: bold;';
+            console.log('%cSuccess%c Styled console output', `${base} background: #2f7d59; color: white;`, 'color: #1769aa; font-weight: bold;');
+            console.log('%cWarning badge', `${base} background: #fff4bf; color: #7a5b00;`);
+            updateState('generated styled output');
+        }
+
+        function demoGroups() {
+            console.group('Checkout flow');
+            console.log('Validate cart');
+            console.groupCollapsed('Payment details');
+            console.log('Card type: demo');
+            console.log('Amount: 42');
+            console.groupEnd();
+            console.log('Complete order');
+            console.groupEnd();
+            updateState('generated grouped logs');
+        }
+
+        function demoTable() {
+            const people = [
+                { name: 'Alice', role: 'Developer', tickets: 5 },
+                { name: 'Bob', role: 'Designer', tickets: 3 },
+                { name: 'Charlie', role: 'QA', tickets: 8 }
+            ];
+            console.table(people);
+            updateState('generated table');
+        }
+
+        function demoLevelFilters() {
+            console.log('filter-demo: normal log');
+            console.info('filter-demo: info log');
+            console.warn('filter-demo: warning log');
+            console.error('filter-demo: error log');
+            updateState('generated mixed level logs');
+        }
+
+        function demoUrlFilter() {
+            console.log('This log comes from the HTML file. Filter with url:01-console-demo.html');
+            const script = document.createElement('script');
+            script.textContent = "console.log('This log comes from a named demo script. Filter with url:session-01-console-url-filter-demo.js');\nconsole.warn('Named demo script warning for URL filtering.');\n//# sourceURL=session-01-console-url-filter-demo.js";
+            document.body.appendChild(script);
+            script.remove();
+            updateState('generated URL filter logs');
+        }
+
+        function demoUnderstandWarning() {
+            console.warn('Demo warning: The checkout button has no accessible name. Use Console Insights to understand this warning.');
+            updateState('generated warning for Console Insights');
+        }
+
+        function demoUnderstandError() {
+            updateState('throwing demo error');
+            throw new Error('Demo error: Cannot read properties of undefined checkoutTotal');
+        }
+
+        function demoFailedFetch() {
+            fetch('/session-01-missing-resource.json')
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error(`Fetch failed with status ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .catch(function (error) {
+                    console.error('Demo fetch error:', error);
+                });
+            updateState('triggered failed fetch');
+        }
+
+        document.getElementById('utility-click-target').addEventListener('click', function () {
+            console.log('utility-click-target clicked');
+            updateState('clicked utility event target');
+        });
+
+        function demoNestedTiming() {
+            console.time('outer-operation');
+            for (let i = 0; i < 500000; i += 1) {
+                Math.sqrt(i);
+            }
+            console.time('inner-operation');
+            for (let i = 0; i < 250000; i += 1) {
+                Math.log(i + 1);
+            }
+            console.timeEnd('inner-operation');
+            console.timeEnd('outer-operation');
+            updateState('generated nested timers');
+        }
+
+        function expensiveFunction() {
+            let total = 0;
+            for (let i = 0; i < 2000000; i += 1) {
+                total += Math.sqrt(i);
+            }
+            console.log('Expensive function total:', Math.round(total));
+            updateState('ran expensive function');
+            return total;
+        }
+
+        function processDemoData(data) {
+            const result = {
+                ...data,
+                processedAt: new Date().toISOString()
+            };
+            console.log('Processed demo data:', result);
+            updateState('processed demo data');
+            return result;
+        }
+    </script>
+</body>
+</html>

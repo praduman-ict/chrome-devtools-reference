@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elements Panel - DOM Inspection Demo</title>
+    <style>
+        :root {
+            --blue: #1769aa;
+            --green: #2f7d59;
+            --yellow: #fff4bf;
+            --red: #c62828;
+            --ink: #202124;
+            --muted: #5f6368;
+            --line: #dfe3e8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f6f8fb;
+            color: var(--ink);
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--line);
+            padding: 24px;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin-top: 0;
+        }
+
+        h2 {
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 8px;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            padding: 8px 14px;
+            margin: 4px 6px 4px 0;
+            background: var(--blue);
+            color: white;
+            border: 0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover,
+        button:focus-visible {
+            background: #0f4f86;
+        }
+
+        code {
+            background: #eef2f7;
+            border-radius: 3px;
+            padding: 2px 5px;
+        }
+
+        .demo-section {
+            background: #ffffff;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            margin-bottom: 18px;
+            padding: 18px;
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .dynamic-output > div {
+            background: var(--yellow);
+            border: 1px solid #d4a900;
+            margin-top: 8px;
+            padding: 8px;
+        }
+
+        .selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .selector-card {
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--blue);
+            border-radius: 4px;
+            padding: 12px;
+        }
+
+        .product-list {
+            margin: 8px 0 0;
+            padding-left: 20px;
+        }
+
+        .product-list li[data-stock="low"] {
+            color: var(--red);
+            font-weight: bold;
+        }
+
+        .edit-target {
+            border: 1px dashed var(--blue);
+            padding: 12px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .style-demo .primary-card {
+            background: #e8f0fe;
+            border: 2px solid var(--blue);
+            color: #174ea6;
+            font-weight: bold;
+            padding: 14px;
+        }
+
+        .style-demo .primary-card strong {
+            color: #0b3d68;
+        }
+
+        .box-demo {
+            width: 240px;
+            margin: 18px 0;
+            border: 4px solid var(--blue);
+            padding: 22px;
+            background: #d9efff;
+        }
+
+        .measure-layout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        .measure-card {
+            width: 180px;
+            min-height: 120px;
+            border: 1px solid var(--line);
+            padding: 16px;
+            background: #f8fbff;
+        }
+
+        .breakpoint-target {
+            background: var(--yellow);
+            border: 1px solid #d4a900;
+            margin: 10px 0;
+            padding: 10px;
+        }
+
+        .attribute-target {
+            border: 1px solid #999;
+            margin: 10px 0;
+            padding: 10px;
+        }
+
+        .attribute-target.is-highlighted {
+            background: #dff6e8;
+            border-color: var(--green);
+        }
+
+        .removal-target {
+            background: #ffe9e9;
+            border: 1px solid var(--red);
+            margin: 10px 0;
+            padding: 10px;
+        }
+
+        .event-output {
+            min-height: 28px;
+            margin-top: 8px;
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        .a11y-example {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
+        .a11y-example article {
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            padding: 12px;
+        }
+
+        .low-contrast {
+            color: #b7b7b7;
+            background: #ffffff;
+        }
+
+        .reference-panel {
+            border: 1px solid var(--line);
+            padding: 12px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Elements Panel - DOM Inspection and Manipulation</h1>
+        <p>Open DevTools, select the Elements panel, and inspect each numbered section in order.</p>
+    </header>
+
+    <main>
+        <section class="demo-section" id="viewing-dom">
+            <h2>1. Viewing the DOM</h2>
+            <p>Inspect this nested structure and use the breadcrumb trail at the bottom of the Elements panel.</p>
+            <div id="parent" class="reference-panel">
+                Parent div
+                <div id="child" class="reference-panel">
+                    Child div
+                    <span id="grandchild">Grandchild span</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="demo-section" id="searching-dom">
+            <h2>2. Searching the DOM</h2>
+            <p>Press <code>Ctrl+F</code> or <code>Cmd+F</code> in Elements and try text, CSS selectors, and XPath.</p>
+            <div class="selector-grid">
+                <article class="selector-card featured" data-demo="css-selector">
+                    <h3>CSS Selector Target</h3>
+                    <p>Try <code>.selector-card.featured</code> or <code>[data-demo="css-selector"]</code>.</p>
+                </article>
+                <article class="selector-card" data-demo="xpath-selector">
+                    <h3>XPath Target</h3>
+                    <p>Try <code>//article[@data-demo='xpath-selector']</code>.</p>
+                </article>
+                <article class="selector-card" data-demo="text-search">
+                    <h3>Text Search Target</h3>
+                    <p>Search for <strong>Find me from Elements</strong>.</p>
+                </article>
+            </div>
+            <ul class="product-list" aria-label="Product inventory">
+                <li data-sku="keyboard" data-stock="ok">Keyboard - in stock</li>
+                <li data-sku="mouse" data-stock="low">Mouse - low stock</li>
+                <li data-sku="monitor" data-stock="ok">Monitor - in stock</li>
+            </ul>
+            <p class="hint">XPath examples: <code>//li[@data-stock='low']</code>, <code>//section[@id='searching-dom']//article[2]</code>.</p>
+        </section>
+
+        <section class="demo-section" id="editing-dom">
+            <h2>3. Editing the DOM</h2>
+            <p id="target-paragraph" class="edit-target">Double-click this text in the DOM tree or choose <strong>Edit as HTML</strong>.</p>
+            <button type="button" onclick="addElement()">Add New Element</button>
+            <button type="button" onclick="removeLastElement()">Remove Last Element</button>
+            <button type="button" onclick="toggleHidden()">Toggle Hidden Element</button>
+            <div id="hidden-element" class="hidden">This element is hidden with a class. Select it and press H to test DevTools hiding.</div>
+            <div id="container" class="dynamic-output"></div>
+        </section>
+
+        <section class="demo-section style-demo" id="css-inspection">
+            <h2>4. CSS Inspection and Editing</h2>
+            <p class="primary-card" style="text-decoration: underline;">
+                Inspect this card to compare inline styles, stylesheet rules, inherited styles, and computed styles.
+                <strong>Try disabling or editing rules live.</strong>
+            </p>
+            <label>
+                Demo input:
+                <input id="demo-input" class="demo-class" type="text" data-role="form-field" data-validation="email" placeholder="Inspect attributes" value="Edit my attributes">
+            </label>
+        </section>
+
+        <section class="demo-section" id="measurements">
+            <h2>5. Element Measurements</h2>
+            <p>Inspect the box model and use the Command Menu to enable rulers on hover.</p>
+            <div class="box-demo">
+                Box Model Demo<br>
+                Width: 240px, Padding: 22px, Border: 4px
+            </div>
+            <div class="measure-layout">
+                <div class="measure-card">Measure card A</div>
+                <div class="measure-card">Measure card B with more text for height comparison</div>
+            </div>
+        </section>
+
+        <section class="demo-section" id="dom-breakpoints">
+            <h2>6. DOM Change Breakpoints</h2>
+
+            <h3>6.1 Subtree Modifications</h3>
+            <button type="button" onclick="domChangeDemo()">Modify DOM</button>
+            <div id="mutation-target" class="breakpoint-target">Original content</div>
+            <p class="hint">Right-click the target div in Elements, choose <strong>Break on > Subtree modifications</strong>, then click the button.</p>
+
+            <h3>6.2 Attribute Modifications</h3>
+            <button type="button" onclick="attributeChangeDemo()">Change Class</button>
+            <div id="attribute-target" class="attribute-target">Attribute target element</div>
+            <p class="hint">Set <strong>Break on > Attribute modifications</strong>, then click the button.</p>
+
+            <h3>6.3 Node Removal</h3>
+            <button type="button" onclick="nodeRemovalDemo()">Remove Element</button>
+            <button type="button" onclick="restoreRemovalTarget()">Restore Element</button>
+            <div id="removal-wrapper">
+                <div id="removal-target" class="removal-target">This element can be removed and restored.</div>
+            </div>
+            <p class="hint">Set <strong>Break on > Node removal</strong> on the red target, then remove it.</p>
+        </section>
+
+        <section class="demo-section" id="event-listeners">
+            <h2>7. Event Listeners</h2>
+            <button type="button" id="event-demo-btn">Click, double-click, or hover me</button>
+            <p>Inspect the button and open the <strong>Event Listeners</strong> tab.</p>
+            <div id="event-output" class="event-output"></div>
+        </section>
+
+        <section class="demo-section" id="accessibility-tree">
+            <h2>8. Accessibility Tree</h2>
+            <div class="a11y-example">
+                <article>
+                    <h3>Semantic Example</h3>
+                    <label for="email-field">Email address</label>
+                    <input id="email-field" type="email" autocomplete="email">
+                    <button type="button" aria-label="Save email address">Save</button>
+                </article>
+                <article>
+                    <h3>Issues to Inspect</h3>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70'%3E%3Crect width='140' height='70' fill='%23dfe3e8'/%3E%3Ctext x='20' y='42' font-size='16'%3EDemo image%3C/text%3E%3C/svg%3E">
+                    <p class="low-contrast">This text has intentionally low contrast.</p>
+                    <button type="button"></button>
+                </article>
+            </div>
+            <p class="hint">Inspect roles, names, labels, missing alt text, and contrast warnings.</p>
+        </section>
+
+        <section class="demo-section" id="ai-assistance">
+            <h2>9. AI Assistance for Elements</h2>
+            <p>Select any problem element on this page, right-click it in the Elements panel, and choose <strong>Ask AI</strong> to ask about styling or layout.</p>
+            <p>For a focused practice page, open <a href="02-ai-assistance-demo.html">02-ai-assistance-demo.html</a>.</p>
+        </section>
+
+        <section class="demo-section" id="advanced-techniques">
+            <h2>10. Advanced Techniques</h2>
+            <p>Select the card below, then try copying selector, XPath, JS path, or using <code>$0</code> in the Console.</p>
+            <article id="copy-reference-card" class="selector-card" data-reference="copy-target">
+                <h3>Copy Reference Target</h3>
+                <p>Use right-click <strong>Copy</strong> options or <strong>Store as global variable</strong>.</p>
+            </article>
+        </section>
+    </main>
+
+    <script>
+        let elementCount = 0;
+
+        function addElement() {
+            elementCount += 1;
+            const div = document.createElement('div');
+            div.textContent = `Dynamically added element ${elementCount}`;
+            div.setAttribute('data-created-by', 'addElement');
+            document.getElementById('container').appendChild(div);
+        }
+
+        function removeLastElement() {
+            const container = document.getElementById('container');
+            if (container.lastElementChild) {
+                container.removeChild(container.lastElementChild);
+            }
+        }
+
+        function toggleHidden() {
+            document.getElementById('hidden-element').classList.toggle('hidden');
+        }
+
+        function domChangeDemo() {
+            const target = document.getElementById('mutation-target');
+            target.textContent = `Content modified at ${new Date().toLocaleTimeString()}`;
+            const child = document.createElement('span');
+            child.textContent = ' Added child node.';
+            target.appendChild(child);
+        }
+
+        function attributeChangeDemo() {
+            const el = document.getElementById('attribute-target');
+            el.classList.toggle('is-highlighted');
+            el.setAttribute('data-last-change', new Date().toISOString());
+            el.textContent = `Class changed to: ${el.className}`;
+        }
+
+        function nodeRemovalDemo() {
+            const el = document.getElementById('removal-target');
+            if (el) {
+                el.remove();
+            }
+        }
+
+        function restoreRemovalTarget() {
+            const wrapper = document.getElementById('removal-wrapper');
+            if (!document.getElementById('removal-target')) {
+                const div = document.createElement('div');
+                div.id = 'removal-target';
+                div.className = 'removal-target';
+                div.textContent = 'This element can be removed and restored.';
+                wrapper.appendChild(div);
+            }
+        }
+
+        const eventBtn = document.getElementById('event-demo-btn');
+        const eventOutput = document.getElementById('event-output');
+
+        eventBtn.addEventListener('click', function () {
+            eventOutput.textContent = 'Click event fired';
+            console.log('Click event fired on event-demo-btn');
+        });
+
+        eventBtn.addEventListener('dblclick', function () {
+            eventOutput.textContent = 'Double click event fired';
+        });
+
+        eventBtn.addEventListener('mouseenter', function () {
+            eventBtn.style.background = '#2f7d59';
+        });
+
+        eventBtn.addEventListener('mouseleave', function () {
+            eventBtn.style.background = '';
+        });
+
+        document.getElementById('demo-input').addEventListener('input', function (event) {
+            console.log('Input value changed:', event.target.value);
+        });
+    </script>
+</body>
+</html>

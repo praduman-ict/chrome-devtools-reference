@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sources Panel - Debugging Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .demo-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 5px 5px 5px 0;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        input {
+            padding: 8px;
+            margin: 5px 5px 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .output {
+            background: #f0f0f0;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            min-height: 30px;
+        }
+        .error {
+            color: red;
+            background: #ffe9e9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .normal {
+            background: #f5f5f5;
+        }
+
+        .highlighted {
+            background: #cdeffd;
+            border-color: #3399ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sources Panel - JavaScript Debugging</h1>
+    <p><strong>Instructions:</strong> Open the Sources tab in DevTools. Set breakpoints on lines to debug the code.</p>
+
+    <div class="demo-section">
+        <h2>1. Step Through Code</h2>
+        <button onclick="stepThroughDemo()">Run Step Demo</button>
+        <div class="output" id="step-output">Output will appear here</div>
+        <p><small>Click the button, then use Step Over (F10), Step Into (F11), and Step Out (Shift+F11) to navigate.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>2. Conditional Breakpoint</h2>
+        <input type="number" id="numbers-input" placeholder="Enter a number" value="5">
+        <button onclick="conditionalBreakpointDemo()">Run Conditional Demo</button>
+        <div class="output" id="conditional-output">Output will appear here</div>
+        <p><small>Set conditional breakpoint: <code>i === 5</code> on the loop line to break only when counter equals 5.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>3. Exception Handling</h2>
+        <button onclick="testCaughtException()">Test Caught Exception</button>
+        <button onclick="testUncaughtException()">Test Uncaught Exception</button>
+        <div class="output" id="exception-output">Output will appear here</div>
+        <p><small>Enable "Pause on exceptions" in Breakpoints section to debug exception handling.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>4. Watch Expressions</h2>
+        <button onclick="watchExpressionDemo()">Run Watch Demo</button>
+        <div class="output" id="watch-output">Output will appear here</div>
+        <p><small>In Sources panel, add watch expressions: <code>userData.name</code>, <code>count</code>, <code>typeof data</code></small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>5. Call Stack Analysis</h2>
+        <button onclick="callStackDemo()">Run Call Stack Demo</button>
+        <div class="output" id="callstack-output">Output will appear here</div>
+        <p><small>Set a breakpoint and examine the Call Stack pane to see the function call hierarchy.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>6. Breakpoint on DOM Changes</h2>
+        <h3>6.1. Breakpoint on Subtree Modifications</h3>
+        <button onclick="domChangeDemo()">Modify DOM</button>
+        <div id="mutation-target" style="background: lightyellow; padding: 10px; margin: 10px 0; border: 1px solid orange;">
+            Original content
+        </div>
+        <p><small>In Elements panel, set breakpoint on this div: Right-click → Break on → Subtree modifications. Then click "Modify DOM" button.</small></p>
+
+        <h3>6.2 Breakpoint on Attribute Changes</h3>
+        <button onclick="attributeChangeDemo()">Change Class</button>
+
+        <div id="attribute-target" class="box normal"
+            style="padding:10px; margin:10px 0; border:1px solid #999;">
+            Attribute target element
+        </div>
+        <p>
+            <small>
+                In Elements panel, set breakpoint on this div:  
+                Right-click → Break on → Attribute modifications.  
+                Then click "Change Class".
+            </small>
+        </p>
+
+        <h3>6.3 Breakpoint on Node Removal</h3>
+        <button onclick="nodeRemovalDemo()">Remove Element</button>
+
+        <div id="removal-container"
+            style="padding:10px; margin:10px 0; border:1px solid red; background:#ffeaea;">
+            This element will be removed
+        </div>
+
+        <p>
+            <small>
+                In Elements panel, set breakpoint on this div:  
+                Right-click → Break on → Node removal.  
+                Then click "Remove Element".
+            </small>
+        </p>
+    </div>
+
+    <div class="demo-section">
+        <h2>7. Event Listener Breakpoint</h2>
+        <button id="event-breakpoint-btn">Click me for event breakpoint</button>
+        <div class="output" id="event-output">Output will appear here</div>
+        <p><small>In Breakpoints section, expand "Event Listener Breakpoints" and check "click". Then click this button.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>8. Debugger Statement</h2>
+        <button onclick="debuggerDemo()">Run Debugger Statement</button>
+        <div class="output" id="debugger-output">Output will appear here</div>
+        <p><small>Execution will pause at the <code>debugger;</code> statement in the code.</small></p>
+    </div>
+
+    <script>
+        // Demo 1: Step Through Code
+        function stepThroughDemo() {
+            console.log('Demo 1: Starting step through');
+            const a = 10;
+            const b = 20;
+            const sum = a + b;  // Set breakpoint here
+            console.log('Sum:', sum);
+            document.getElementById('step-output').textContent = 'Sum = ' + sum;
+        }
+
+        // Demo 2: Conditional Breakpoint
+        function conditionalBreakpointDemo() {
+            console.log('Demo 2: Starting conditional breakpoint');
+            const limit = parseInt(document.getElementById('numbers-input').value) || 10;
+            let total = 0;
+            
+            for (let i = 0; i < limit; i++) {  // Set conditional breakpoint: i === 5
+                total += i;
+                console.log('i =', i, 'total =', total);
+            }
+            
+            document.getElementById('conditional-output').textContent = 'Final total: ' + total;
+        }
+
+        // Demo 3: Exception Handling
+        function testCaughtException() {
+            try {
+                console.log('About to throw caught exception');
+                throw new Error('This is a caught error');
+            } catch (e) {
+                console.log('Caught exception:', e.message);
+                document.getElementById('exception-output').textContent = 'Caught: ' + e.message;
+            }
+        }
+
+        function testUncaughtException() {
+            console.log('About to throw uncaught exception');
+            // Uncomment next line to test uncaught exceptions
+            // throw new Error('This is an uncaught error');
+            document.getElementById('exception-output').innerHTML = 'Uncaught exception commented out (would crash page). Uncomment line in source to test.';
+        }
+
+        // Demo 4: Watch Expressions
+        function watchExpressionDemo() {
+            console.log('Demo 4: Watch expressions');
+            let count = 0;
+            const userData = {
+                name: 'Alice',
+                age: 30,
+                email: 'alice@example.com'
+            };
+            
+            // Set breakpoint here and add watches
+            const data = userData;  // Set breakpoint, watch: userData.name, count, typeof data
+            count++;
+            
+            console.log('User:', userData.name);
+            document.getElementById('watch-output').textContent = 'User: ' + userData.name + ', Count: ' + count;
+        }
+
+        // Demo 5: Call Stack
+        function callStackDemo() {
+            functionOne();
+        }
+
+        function functionOne() {
+            console.log('In function one');
+            functionTwo();
+        }
+
+        function functionTwo() {
+            console.log('In function two');
+            functionThree();
+        }
+
+        function functionThree() {
+            console.log('In function three - set breakpoint here to see full call stack');
+            // Set breakpoint here to see: functionThree → functionTwo → functionOne → callStackDemo
+            document.getElementById('callstack-output').textContent = 'Check Call Stack pane in Sources panel for full hierarchy';
+        }
+
+        // Demo 6: DOM Mutation
+        // Demo 6.1: DOM Mutation
+        function domChangeDemo() {
+            const target = document.getElementById('mutation-target');
+            target.textContent = 'Content modified!';  // If breakpoint set, pauses here
+            target.style.background = 'lightgreen';
+        }
+
+        // Demo 6.2: Attribute modification
+        function attributeChangeDemo() {
+            const el = document.getElementById('attribute-target');
+            el.classList.toggle('highlighted');
+            el.textContent = 'Class changed to: ' + el.className;
+        }
+
+        // Demo 6.3: Node removal
+        function nodeRemovalDemo() {
+            const el = document.getElementById('removal-container');
+            el.remove();
+        }
+
+        // Demo 7: Event Listener Breakpoint
+        document.getElementById('event-breakpoint-btn').addEventListener('click', function() {
+            console.log('Event listener clicked');
+            document.getElementById('event-output').textContent = 'Button clicked at ' + new Date().toLocaleTimeString();
+        });
+
+        // Demo 8: Debugger Statement
+        function debuggerDemo() {
+            console.log('Before debugger statement');
+            debugger;  // Execution pauses here
+            console.log('After debugger statement');
+            document.getElementById('debugger-output').textContent = 'Debugger statement executed';
+        }
+    </script>
+</body>
+</html>

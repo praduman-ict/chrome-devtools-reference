@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Console API Demonstration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .section {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 5px 5px 5px 0;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Console Utilities Demonstration</h1>
+    <p>Open the DevTools Console to see the outputs. Click buttons to execute code.</p>
+
+    <div class="section">
+        <h2>Basic Logging</h2>
+        <button onclick="demoBasicLogging()">Log Messages</button>
+        <p>Click to see console.log(), console.warn(), console.error()</p>
+    </div>
+
+    <div class="section">
+        <h2>Console Styling</h2>
+        <button onclick="demoStyling()">Styled Output</button>
+        <p>See CSS-styled console messages</p>
+    </div>
+
+    <div class="section">
+        <h2>Counting</h2>
+        <button onclick="demoCount()">Count Messages</button>
+        <p>Call same code multiple times, console tracks count</p>
+    </div>
+
+    <div class="section">
+        <h2>Timing</h2>
+        <button onclick="demoTiming()">Time Execution</button>
+        <p>Measure how long code takes to run</p>
+    </div>
+
+    <div class="section">
+        <h2>Groups</h2>
+        <button onclick="demoGroups()">Grouped Messages</button>
+        <p>Organize console output in collapsible groups</p>
+    </div>
+
+    <div class="section">
+        <h2>Table</h2>
+        <button onclick="demoTable()">Display Table</button>
+        <p>Format array/object as readable table</p>
+    </div>
+
+    <div class="section">
+        <h2>Utility Functions</h2>
+        <button onclick="demoSelectors()">DOM Selectors</button>
+        <p>Use $() and $$() shortcuts for DOM queries</p>
+    </div>
+
+    <div class="section">
+        <h2>Event Monitoring</h2>
+        <button onclick="demoMonitoring()">Monitor Clicks</button>
+        <p>Then click in the page to see logged events</p>
+    </div>
+
+    <script>
+        function demoBasicLogging() {
+            console.log('This is a log message');
+            console.warn('This is a warning');
+            console.error('This is an error');
+            console.info('This is info');
+        }
+
+        function demoStyling() {
+            const style1 = 'background-color: blue; color: white; font-size: 1.2em; padding: 5px;';
+            const style2 = 'background-color: orange; color: black; font-weight: bold;';
+            console.log('%cHello %cWorld', style1, style2);
+            console.log('%c✓ Success!', 'color: green; font-weight: bold; font-size: 1.5em;');
+        }
+
+        let countDemo = 0;
+        function demoCount() {
+            countDemo++;
+            console.count('demo-counter');
+        }
+
+        function demoTiming() {
+            console.time('operation');
+            let sum = 0;
+            for (let i = 0; i < 1000000; i++) {
+                sum += i;
+            }
+            console.timeEnd('operation');
+        }
+
+        function demoGroups() {
+            console.group('Outer Group');
+            console.log('Item 1');
+            console.log('Item 2');
+            console.group('Inner Group');
+            console.log('Nested Item 1');
+            console.log('Nested Item 2');
+            console.groupEnd();
+            console.log('Item 3');
+            console.groupEnd();
+        }
+
+        function demoTable() {
+            const people = [
+                { name: 'Alice', age: 25, city: 'NYC' },
+                { name: 'Bob', age: 30, city: 'LA' },
+                { name: 'Charlie', age: 28, city: 'Chicago' }
+            ];
+            console.table(people);
+        }
+
+        function demoSelectors() {
+            const firstButton = $('button');
+            const allButtons = $$('button');
+            console.log('First button:', firstButton);
+            console.log('All buttons:', allButtons);
+            console.log('Current element $0:', $0);
+        }
+
+        function demoMonitoring() {
+            console.log('Now monitoring click events. Click anywhere on the page.');
+            monitorEvents(document, 'click');
+            setTimeout(() => {
+                console.log('Stop monitoring after 10 seconds...');
+                unmonitorEvents(document, 'click');
+            }, 10000);
+        }
+    </script>
+</body>
+</html>

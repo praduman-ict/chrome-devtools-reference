@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elements AI Assistance Demo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f7f9fc;
+            color: #202124;
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        header,
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #dfe3e8;
+            max-width: none;
+        }
+
+        header > div {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin-top: 0;
+        }
+
+        code {
+            background: #eef2f7;
+            border-radius: 3px;
+            padding: 2px 5px;
+        }
+
+        .demo-section {
+            background: #ffffff;
+            border: 1px solid #dfe3e8;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            padding: 18px;
+        }
+
+        .toolbar {
+            align-items: center;
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .toolbar button,
+        .cta {
+            background: #1769aa;
+            border: 0;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font: inherit;
+            padding: 8px 14px;
+        }
+
+        .problem-card {
+            border: 1px solid #dfe3e8;
+            border-radius: 6px;
+            margin-top: 12px;
+            padding: 16px;
+        }
+
+        .overflow-demo {
+            max-width: 360px;
+            overflow: hidden;
+        }
+
+        .wide-content {
+            background: #fff4bf;
+            border: 1px solid #d4a900;
+            min-width: 620px;
+            padding: 12px;
+        }
+
+        .layout-demo {
+            align-items: flex-start;
+            border: 1px dashed #1769aa;
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+        }
+
+        .layout-demo .main-card {
+            background: #e8f0fe;
+            border: 1px solid #1769aa;
+            padding: 12px;
+            width: 72%;
+        }
+
+        .layout-demo .side-card {
+            background: #fdecea;
+            border: 1px solid #c62828;
+            padding: 12px;
+            width: 44%;
+        }
+
+        .contrast-demo {
+            background: #ffffff;
+            color: #b8b8b8;
+            font-size: 15px;
+            padding: 12px;
+        }
+
+        .spacing-demo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+        }
+
+        .spacing-demo button {
+            border: 1px solid #1769aa;
+            background: #e8f0fe;
+            border-radius: 3px;
+            color: #174ea6;
+            cursor: pointer;
+            min-height: 40px;
+        }
+
+        .prompt-list {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>Elements AI Assistance Demo</h1>
+            <p>Select one problem element in the Elements panel, right-click it, then choose <strong>Ask AI</strong>. The selected node becomes the context for the chat.</p>
+        </div>
+    </header>
+
+    <main>
+        <section class="demo-section">
+            <h2>How to Practice</h2>
+            <ol>
+                <li>Open DevTools and go to the <strong>Elements</strong> panel.</li>
+                <li>Select one highlighted problem area below.</li>
+                <li>Right-click the selected DOM node and choose <strong>Ask AI</strong>.</li>
+                <li>Ask a specific question about layout, styling, or accessibility.</li>
+                <li>Test any suggested CSS changes in the Styles panel before saving them.</li>
+            </ol>
+        </section>
+
+        <section class="demo-section">
+            <h2>1. Overflow Problem</h2>
+            <p>Inspect <code>.wide-content</code> or its parent <code>.overflow-demo</code>.</p>
+            <div class="problem-card overflow-demo" data-ai-demo="overflow">
+                <div class="wide-content">This child is intentionally wider than its parent. Ask AI why the content is clipped and what CSS changes could make it responsive.</div>
+            </div>
+            <ul class="prompt-list">
+                <li><code>Why is this content overflowing or clipped?</code></li>
+                <li><code>What CSS change would make this section responsive?</code></li>
+            </ul>
+        </section>
+
+        <section class="demo-section">
+            <h2>2. Flex Layout Problem</h2>
+            <p>Inspect <code>.layout-demo</code> and ask why the children do not fit cleanly.</p>
+            <div class="problem-card layout-demo" data-ai-demo="flex-layout">
+                <div class="main-card">Main content area set to 72% width.</div>
+                <aside class="side-card">Sidebar set to 44% width.</aside>
+            </div>
+            <ul class="prompt-list">
+                <li><code>Why are these flex children too wide for the row?</code></li>
+                <li><code>Suggest a safer flex layout for this component.</code></li>
+            </ul>
+        </section>
+
+        <section class="demo-section">
+            <h2>3. Contrast Problem</h2>
+            <p>Inspect the paragraph and ask AI to explain the readability issue.</p>
+            <p class="problem-card contrast-demo" data-ai-demo="contrast">This text intentionally has weak contrast against the background.</p>
+            <ul class="prompt-list">
+                <li><code>Does this text have enough contrast?</code></li>
+                <li><code>Suggest a more accessible text color.</code></li>
+            </ul>
+        </section>
+
+        <section class="demo-section">
+            <h2>4. Spacing Problem</h2>
+            <p>Inspect the grid or one button and ask AI about spacing consistency.</p>
+            <div class="problem-card spacing-demo" data-ai-demo="spacing">
+                <button type="button">Save</button>
+                <button type="button">Cancel</button>
+                <button type="button">Preview</button>
+            </div>
+            <ul class="prompt-list">
+                <li><code>Are these buttons spaced consistently?</code></li>
+                <li><code>What CSS controls the spacing here?</code></li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>

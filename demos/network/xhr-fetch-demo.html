@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Panel - Request Monitoring Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .demo-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 5px 5px 5px 0;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .output {
+            background: #f0f0f0;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            min-height: 40px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .request-status {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Network Panel - Request Monitoring</h1>
+    <p><strong>Instructions:</strong> Open the Network tab in DevTools and click buttons to see network requests.</p>
+
+    <div class="demo-section">
+        <h2>1. Fetch JSON Data</h2>
+        <button onclick="fetchJSONDemo()">Fetch JSON</button>
+        <div class="output" id="json-output">Response will appear here</div>
+        <p><small>In Network panel, filter by "Fetch" to see the request. Check Response tab for JSON data.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>2. XHR Request</h2>
+        <button onclick="xhrDemo()">Make XHR Request</button>
+        <div class="output" id="xhr-output">Response will appear here</div>
+        <p><small>Filter by "XHR" in Network panel to see XMLHttpRequest requests.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>3. Image Loading</h2>
+        <button onclick="loadImageDemo()">Load Image</button>
+        <div id="image-container"></div>
+        <p><small>Filter by "Img" type to see image requests. Check Size column for image dimensions.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>4. Multiple Requests (Waterfall)</h2>
+        <button onclick="multipleRequestsDemo()">Load Multiple Resources</button>
+        <div class="output" id="multi-output">Status will appear here</div>
+        <p><small>Check Network waterfall to see how requests are parallel/serial. Look at timing breakdown.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>5. Slow Network Simulation</h2>
+        <p><small>Use DevTools throttling: Network panel → Throttle dropdown → Select "Slow 3G" or "Fast 3G"</small></p>
+        <button onclick="slowNetworkDemo()">Slow Request</button>
+        <div class="output" id="slow-output">Status will appear here</div>
+        <p><small>Watch request timing change based on selected throttle profile.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>6. Request Blocking Test</h2>
+        <p><small>Setup: Network panel → Click ⋮ → Enable "Request blocking"</small></p>
+        <p><small>Then add block pattern: <code>/api/blocked</code></small></p>
+        <button onclick="blockableRequestDemo()">Make Blockable Request</button>
+        <div class="output" id="block-output">Response will appear here</div>
+    </div>
+
+    <div class="demo-section">
+        <h2>7. Request Headers Analysis</h2>
+        <button onclick="headersDemo()">Inspect Headers</button>
+        <div class="output" id="headers-output">Click Network request and check Headers tab</div>
+        <p><small>In Network panel, click request → Headers tab to see: User-Agent, Accept, Content-Type, Cookies, etc.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>8. Response Analysis</h2>
+        <button onclick="responseDemo()">View Response</button>
+        <div class="output" id="response-output">Response will appear here</div>
+        <p><small>In Network panel, click request → Response tab to see the actual response body.</small></p>
+    </div>
+
+    <script>
+        // Demo 1: Fetch JSON
+        function fetchJSONDemo() {
+            fetch('https://jsonplaceholder.typicode.com/posts/1')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('JSON data:', data);
+                    document.getElementById('json-output').textContent = JSON.stringify(data, null, 2).substring(0, 300) + '...';
+                })
+                .catch(error => {
+                    document.getElementById('json-output').textContent = 'Error: ' + error.message;
+                });
+        }
+
+        // Demo 2: XHR Request
+        function xhrDemo() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/2', true);
+            xhr.onload = function() {
+                const data = JSON.parse(xhr.responseText);
+                console.log('XHR data:', data);
+                document.getElementById('xhr-output').textContent = 'XHR Response: ' + JSON.stringify(data).substring(0, 300) + '...';
+            };
+            xhr.onerror = function() {
+                document.getElementById('xhr-output').textContent = 'XHR Error';
+            };
+            xhr.send();
+        }
+
+        // Demo 3: Image Loading
+        function loadImageDemo() {
+            const container = document.getElementById('image-container');
+            const img = document.createElement('img');
+            img.src = 'https://via.placeholder.com/300x200?text=Test+Image';
+            img.alt = 'Test image';
+            img.style.cssText = 'max-width: 100%; border: 1px solid #ccc; margin-top: 10px;';
+            container.innerHTML = '';
+            container.appendChild(img);
+        }
+
+        // Demo 4: Multiple Requests
+        function multipleRequestsDemo() {
+            const output = document.getElementById('multi-output');
+            output.textContent = 'Loading multiple resources...\n';
+            
+            Promise.all([
+                fetch('https://jsonplaceholder.typicode.com/posts/1').then(r => r.json()),
+                fetch('https://jsonplaceholder.typicode.com/posts/2').then(r => r.json()),
+                fetch('https://jsonplaceholder.typicode.com/posts/3').then(r => r.json()),
+            ])
+            .then(() => {
+                output.textContent = 'Loaded 3 posts. Check Network waterfall for request timing.';
+            })
+            .catch(error => {
+                output.textContent = 'Error: ' + error.message;
+            });
+        }
+
+        // Demo 5: Slow Network
+        function slowNetworkDemo() {
+            const output = document.getElementById('slow-output');
+            output.textContent = 'Loading with simulated delay...\n';
+            output.textContent += 'Set Network throttle to "Slow 3G" to see effect.\n';
+            
+            fetch('https://jsonplaceholder.typicode.com/posts/5')
+                .then(r => r.json())
+                .then(data => {
+                    output.textContent = 'Loaded. Check timing in Network panel for request duration.';
+                });
+        }
+
+        // Demo 6: Blockable Request
+        function blockableRequestDemo() {
+            const output = document.getElementById('block-output');
+            output.textContent = 'Attempting blocked request...\n';
+            
+            fetch('/api/blocked')
+                .then(r => r.json())
+                .then(data => {
+                    output.textContent = 'Request successful: ' + JSON.stringify(data);
+                })
+                .catch(error => {
+                    output.textContent = 'Request blocked or failed: ' + error.message;
+                });
+        }
+
+        // Demo 7: Headers
+        function headersDemo() {
+            document.getElementById('headers-output').textContent = 'Make a request and check Network panel > Headers tab to see:\n\n' +
+                '• Request headers (User-Agent, Accept, Cookies)\n' +
+                '• Response headers (Content-Type, Set-Cookie, Cache-Control)\n' +
+                '• Query String parameters\n' +
+                '• Form data';
+        }
+
+        // Demo 8: Response
+        function responseDemo() {
+            fetch('https://jsonplaceholder.typicode.com/posts/8')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('response-output').textContent = 'Response body preview:\n\n' + JSON.stringify(data, null, 2);
+                });
+        }
+    </script>
+</body>
+</html>

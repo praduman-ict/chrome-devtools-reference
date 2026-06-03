@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overrides - Local File Testing Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .demo-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 5px 5px 5px 0;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .code-box {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .demo-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .output {
+            background: #f0f0f0;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+    <h1>Overrides: Local File Testing Without Deployment</h1>
+
+    <div class="demo-section">
+        <h2>What Are Overrides?</h2>
+        <p>Overrides allow you to modify local copies of files and have them persisted across page reloads, without deploying to the server.</p>
+        <div class="info-box">
+            <strong>Use Cases:</strong>
+            <ul>
+                <li>Test CSS/JavaScript changes without deploying</li>
+                <li>Mock API responses for testing</li>
+                <li>Test different user states</li>
+                <li>Experiment with design changes</li>
+                <li>Debug issues before committing code</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>Setting Up Overrides (Step-by-Step)</h2>
+        <ol>
+            <li>Open DevTools (F12)</li>
+            <li>Click <strong>Sources</strong> tab</li>
+            <li>On left sidebar, click <strong>Overrides</strong> (may need to scroll)</li>
+            <li>Click <strong>"+ Select folder for overrides"</strong></li>
+            <li>Choose or create a local folder</li>
+            <li>Click <strong>Allow</strong> when browser asks for permission</li>
+            <li>Start editing files in Sources panel or directly in folder</li>
+        </ol>
+    </div>
+
+    <div class="demo-section">
+        <h2>1. CSS Override Example</h2>
+        <div class="demo-box">
+            <p id="styled-text">This text has inline styling. In an override:</p>
+            <ol>
+                <li>Edit file in Sources panel or folder</li>
+                <li>Change CSS properties</li>
+                <li>Reload page</li>
+                <li>Your CSS overrides are applied</li>
+            </ol>
+        </div>
+        <script>
+            document.getElementById('styled-text').style.cssText = 'background: lightblue; padding: 10px; border-radius: 4px; color: #333;';
+        </script>
+        <p><small>To override: Create file in override folder with same path and filename, edit CSS, reload page.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>2. JavaScript Override Example</h2>
+        <button onclick="demoJSOverride()">Click to See JS Demo</button>
+        <div class="output" id="js-output">Output appears here</div>
+        <p><small>You could override this JavaScript by editing the file in your override folder.</small></p>
+        <script>
+            function demoJSOverride() {
+                document.getElementById('js-output').textContent = 'JavaScript executed. You can override this function in your local override file.';
+            }
+        </script>
+    </div>
+
+    <div class="demo-section">
+        <h2>3. Mock API Responses</h2>
+        <button onclick="mockAPIDemo()">Test Mock API</button>
+        <div class="output" id="api-output">API response will appear here</div>
+        <p><small>Override the API script to return mock data instead of real API calls.</small></p>
+        <script>
+            function mockAPIDemo() {
+                // In override, you could return mock data:
+                const mockData = {
+                    users: [
+                        { id: 1, name: 'Alice' },
+                        { id: 2, name: 'Bob' }
+                    ]
+                };
+                document.getElementById('api-output').textContent = 'Mock API: ' + JSON.stringify(mockData, null, 2);
+            }
+        </script>
+    </div>
+
+    <div class="demo-section">
+        <h2>4. Feature Flag Testing</h2>
+        <button onclick="testFeatureOverride()">Test Feature Flag Override</button>
+        <div class="output" id="feature-output">Feature state will appear here</div>
+        <p><small>Override config file to enable/disable features without code changes.</small></p>
+        <script>
+            function testFeatureOverride() {
+                // Override would change this configuration
+                const featureConfig = {
+                    newUI: false,        // Override to true to test new UI
+                    betaFeatures: false, // Override to true to test beta
+                    darkMode: false      // Override to true to test dark mode
+                };
+                document.getElementById('feature-output').textContent = 'Current features: ' + JSON.stringify(featureConfig);
+            }
+        </script>
+    </div>
+
+    <div class="demo-section">
+        <h2>Folder Structure for Overrides</h2>
+        <div class="code-box">
+override-folder/
+├─ example.com/
+│  ├─ index.html
+│  ├─ assets/
+│  │  ├─ style.css
+│  │  └─ script.js
+│  └─ config.js
+├─ cdn.example.com/
+│  └─ library.min.js
+        </div>
+        <p><small>Files are stored by domain, mirroring the URL structure of the website.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>Workflow Example: Testing a Bug Fix</h2>
+        <ol>
+            <li><strong>1. Create Override:</strong>
+                <div class="code-box">
+Create file: override-folder/example.com/js/app.js
+                </div>
+            </li>
+            <li><strong>2. Copy Original Code:</strong> Copy original file contents</li>
+            <li><strong>3. Apply Fix:</strong> Edit the code in override folder</li>
+            <li><strong>4. Test:</strong> Reload page, test the fix</li>
+            <li><strong>5. Verify:</strong> Test all affected features</li>
+            <li><strong>6. Deploy:</strong> Copy fix to source, deploy to production</li>
+        </ol>
+    </div>
+
+    <div class="demo-section">
+        <h2>Verifying Overrides Are Active</h2>
+        <ul>
+            <li><strong>Sources Panel:</strong> File shows override indicator/badge</li>
+            <li><strong>Overrides Tab:</strong> Shows list of active overrides</li>
+            <li><strong>File System:</strong> Check override folder for files</li>
+            <li><strong>Timestamp:</strong> Override files have recent modification times</li>
+        </ul>
+    </div>
+
+    <div class="demo-section">
+        <h2>Clearing Overrides</h2>
+        <div class="info-box">
+            <strong>Remove Specific Override:</strong> Delete file from override folder and reload
+        </div>
+        <div class="info-box">
+            <strong>Remove All Overrides:</strong> Overrides tab → Click menu → Delete all overrides
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>Best Practices</h2>
+        <ul>
+            <li>✓ <strong>Document:</strong> Note what each override does and why</li>
+            <li>✓ <strong>Temporary:</strong> Keep overrides as temporary testing tools</li>
+            <li>✓ <strong>Version Control:</strong> Git-ignore override folder (contains local changes)</li>
+            <li>✓ <strong>Test Thoroughly:</strong> Test all code paths before deploying</li>
+            <li>✓ <strong>Clean Up:</strong> Remove overrides when done testing</li>
+            <li>✗ <strong>Don't:</strong> Leave permanent overrides in use</li>
+        </ul>
+    </div>
+
+    <div class="demo-section">
+        <h2>Common Workflows</h2>
+        <button onclick="showWorkflows()">View Common Workflows</button>
+        <div id="workflows-output"></div>
+        <script>
+            function showWorkflows() {
+                document.getElementById('workflows-output').innerHTML = `
+                    <strong>1. Testing CSS Changes:</strong><br>
+                    Override stylesheet → Make changes → Reload → See results instantly<br>
+                    <br>
+                    <strong>2. Testing JavaScript Logic:</strong><br>
+                    Override script → Fix bug → Reload → Verify fix<br>
+                    <br>
+                    <strong>3. Mocking API Responses:</strong><br>
+                    Override API endpoint → Return mock data → Test application behavior<br>
+                    <br>
+                    <strong>4. Testing User States:</strong><br>
+                    Override config → Change user role/permissions → See different UI<br>
+                    <br>
+                    <strong>5. A/B Testing:</strong><br>
+                    Override styles/content → Test design variants → Choose best
+                `;
+            }
+        </script>
+    </div>
+
+    <div class="demo-section">
+        <h2>Pro Tips</h2>
+        <div class="info-box">
+            <strong>Combine With Other Tools:</strong>
+            <ul>
+                <li>Overrides + Network throttling = Test slow network with custom code</li>
+                <li>Overrides + Breakpoints = Debug custom code with full DevTools</li>
+                <li>Overrides + Console = Test custom functions while developing</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

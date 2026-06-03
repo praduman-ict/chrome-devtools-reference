@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coverage Panel - Code Analysis Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .demo-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 5px 5px 5px 0;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .code-block {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Coverage Panel - Code Usage Analysis</h1>
+    <p><strong>Instructions:</strong> Open DevTools → More tools → Coverage. Click "Analyze page load" or use the record button.</p>
+
+    <div class="demo-section">
+        <h2>Coverage Analysis Process</h2>
+        <ol>
+            <li>Open DevTools → Coverage tab</li>
+            <li>Click the record button (circle icon)</li>
+            <li>Interact with this page (click buttons, scroll)</li>
+            <li>Click stop button when done</li>
+            <li>See which code was used vs. unused</li>
+        </ol>
+        <p><strong>What you'll see:</strong></p>
+        <ul>
+            <li>Each file with total bytes and unused bytes</li>
+            <li>Percentage of code that was executed</li>
+            <li>Red highlighting for unused code</li>
+            <li>Green highlighting for used code</li>
+        </ul>
+    </div>
+
+    <div class="demo-section">
+        <h2>1. Used Code (Functions That Execute)</h2>
+        <button onclick="usedFunction()">Execute Used Function</button>
+        <p>This function executes when you click the button. It will be marked as USED in Coverage.</p>
+        <div id="used-output"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>2. Unused Code (Functions Never Called)</h2>
+        <p>Below is code that exists but never executes. It will be marked as UNUSED in Coverage.</p>
+        <div class="code-block">
+// This function is never called
+function unusedFunction() {
+    console.log('This code never runs');
+    let result = calculateExpensiveOperation();
+    return result;
+}
+
+function calculateExpensiveOperation() {
+    // Very heavy calculation
+    let sum = 0;
+    for (let i = 0; i < 1000000; i++) {
+        sum += Math.random();
+    }
+    return sum;
+}
+        </div>
+        <p><small>After coverage analysis, click on this script file to see which lines are red (unused).</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>3. Conditional Code Paths</h2>
+        <button onclick="conditionalDemo(true)">Execute If Path</button>
+        <button onclick="conditionalDemo(false)">Execute Else Path</button>
+        <div id="conditional-output"></div>
+        <p><small>Depending on which button you click, different code paths execute. Not all code will be covered unless you click both.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>4. Feature Flag Code</h2>
+        <button onclick="featureFlagDemo()">Feature Disabled</button>
+        <div id="feature-output"></div>
+        <p><small>Code behind disabled feature flags is often unused. Coverage shows this clearly.</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h2>5. Optimization Opportunities</h2>
+        <div class="info-box">
+            <strong>High Unused Code %?</strong> Consider:
+            <ul>
+                <li>Removing dead code</li>
+                <li>Code-splitting for features</li>
+                <li>Lazy-loading unused modules</li>
+                <li>Tree-shaking in build process</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>6. Coverage Summary</h2>
+        <button onclick="showCoverageTips()">Show Coverage Tips</button>
+        <div id="tips-output"></div>
+    </div>
+
+    <script>
+        // Used function - executes when button clicked
+        function usedFunction() {
+            const result = processData([1, 2, 3, 4, 5]);
+            document.getElementById('used-output').textContent = 'Function executed! Result: ' + result;
+        }
+
+        function processData(arr) {
+            return arr.reduce((a, b) => a + b, 0);
+        }
+
+        // Unused function - never called
+        function unusedFunction() {
+            console.log('This code never runs');
+            return calculateExpensiveOperation();
+        }
+
+        function calculateExpensiveOperation() {
+            let sum = 0;
+            for (let i = 0; i < 1000000; i++) {
+                sum += Math.random();
+            }
+            return sum;
+        }
+
+        // Conditional demo
+        function conditionalDemo(isTrue) {
+            if (isTrue) {
+                document.getElementById('conditional-output').textContent = 'Executed IF branch';
+            } else {
+                document.getElementById('conditional-output').textContent = 'Executed ELSE branch';
+            }
+        }
+
+        // Feature flag demo
+        const FEATURES = {
+            newUI: false,
+            betaFeature: false,
+            advancedMode: false
+        };
+
+        function featureFlagDemo() {
+            if (FEATURES.newUI) {
+                enableNewUI();
+            } else if (FEATURES.betaFeature) {
+                enableBetaFeature();
+            } else if (FEATURES.advancedMode) {
+                enableAdvancedMode();
+            } else {
+                document.getElementById('feature-output').textContent = 'All features disabled - their code is unused';
+            }
+        }
+
+        function enableNewUI() {
+            console.log('New UI enabled');
+        }
+
+        function enableBetaFeature() {
+            console.log('Beta feature enabled');
+        }
+
+        function enableAdvancedMode() {
+            console.log('Advanced mode enabled');
+        }
+
+        // Tips
+        function showCoverageTips() {
+            document.getElementById('tips-output').innerHTML = `
+                <strong>Coverage Analysis Tips:</strong><br>
+                <br>
+                1. <strong>Baseline:</strong> Run coverage on page load to see immediate usage<br>
+                2. <strong>User Journey:</strong> Interact extensively to execute all features<br>
+                3. <strong>Sort by Unused:</strong> Click "Unused Bytes" to find biggest optimization targets<br>
+                4. <strong>File Analysis:</strong> Click individual files to see which lines are unused<br>
+                5. <strong>Third-party:</strong> Often has high unused % - consider alternatives<br>
+                6. <strong>Dead Code:</strong> Safe to remove - improves bundle size and load time<br>
+                7. <strong>Monitoring:</strong> Track coverage over time to prevent bloat
+            `;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lighthouse Audit Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .demo-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 5px 5px 5px 0;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .score-high {
+            color: green;
+            font-weight: bold;
+        }
+        .score-medium {
+            color: orange;
+            font-weight: bold;
+        }
+        .score-low {
+            color: red;
+            font-weight: bold;
+        }
+        .metric {
+            background: #f9f9f9;
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 4px solid #007bff;
+            border-radius: 2px;
+        }
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lighthouse Audit Demo</h1>
+    <p><strong>Instructions:</strong> Open DevTools → Lighthouse tab → Click "Analyze page load"</p>
+
+    <div class="demo-section">
+        <h2>How to Run Lighthouse Audit</h2>
+        <ol>
+            <li>Open Chrome DevTools (F12)</li>
+            <li>Click the <strong>Lighthouse</strong> tab</li>
+            <li>Select audit categories (Performance, Accessibility, etc.)</li>
+            <li>Choose device type (Mobile or Desktop)</li>
+            <li>Click <strong>Analyze page load</strong></li>
+            <li>Wait 30-60 seconds for audit to complete</li>
+            <li>Review detailed report with scores and recommendations</li>
+        </ol>
+    </div>
+
+    <div class="demo-section">
+        <h2>Core Web Vitals (Key Performance Metrics)</h2>
+        <div class="metric">
+            <strong>Largest Contentful Paint (LCP)</strong><br>
+            <small>When largest visible element renders. Target: &lt; 2.5 seconds</small>
+        </div>
+        <div class="metric">
+            <strong>First Input Delay (FID)</strong><br>
+            <small>How fast page responds to user interaction. Target: &lt; 100ms</small>
+        </div>
+        <div class="metric">
+            <strong>Cumulative Layout Shift (CLS)</strong><br>
+            <small>Unexpected layout changes. Target: &lt; 0.1</small>
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>Performance Improvements</h2>
+        <button onclick="showPerformanceTips()">Performance Tips</button>
+        <div id="perf-output"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>Accessibility Audit</h2>
+        <h3>This page includes:</h3>
+        <ul>
+            <li>✓ HTML lang attribute for screen readers</li>
+            <li>✓ Meta viewport for responsive design</li>
+            <li>✓ Proper heading hierarchy (h1, h2, h3)</li>
+            <li>✓ Color contrast sufficient for readability</li>
+            <li>✓ Buttons have accessible names</li>
+            <li>✓ Images have descriptive alt text</li>
+        </ul>
+        <img src="https://via.placeholder.com/200x100?text=Sample+Image" alt="Demo image showing placeholder content" style="max-width: 100%; margin: 10px 0;">
+    </div>
+
+    <div class="demo-section">
+        <h2>Best Practices Checklist</h2>
+        <div class="metric">
+            <label><input type="checkbox" checked disabled> HTTPS enabled</label>
+        </div>
+        <div class="metric">
+            <label><input type="checkbox" checked disabled> No console errors</label>
+        </div>
+        <div class="metric">
+            <label><input type="checkbox" checked disabled> Responsive viewport</label>
+        </div>
+        <div class="metric">
+            <label><input type="checkbox" checked disabled> Valid HTML</label>
+        </div>
+        <div class="metric">
+            <label><input type="checkbox" checked disabled> No deprecated APIs</label>
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>SEO Optimization</h2>
+        <div class="metric">
+            <strong>Title Tag:</strong> "Lighthouse Audit Demo" ✓
+        </div>
+        <div class="metric">
+            <strong>Meta Description:</strong> (Not visible but should be present) ✓
+        </div>
+        <div class="metric">
+            <strong>Heading Structure:</strong> Single h1, proper h2/h3 hierarchy ✓
+        </div>
+        <div class="metric">
+            <strong>Mobile Friendly:</strong> Responsive design with viewport ✓
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>Lighthouse Scoring</h2>
+        <button onclick="showScoringInfo()">Scoring Information</button>
+        <div id="scoring-output"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>Optimization Results</h2>
+        <p>After running Lighthouse audit, you'll see:</p>
+        <ul>
+            <li><strong>Overall Score:</strong> 0-100 (green: 90+, orange: 50-89, red: 0-49)</li>
+            <li><strong>Opportunities:</strong> Changes that improve score (with estimated impact)</li>
+            <li><strong>Diagnostics:</strong> Additional information and metrics</li>
+            <li><strong>Passed Audits:</strong> What you're doing well</li>
+            <li><strong>Detailed Metrics:</strong> LCP, FID, CLS, FCP, TTI, Speed Index</li>
+        </ul>
+    </div>
+
+    <div class="demo-section">
+        <h2>Common Issues Found by Lighthouse</h2>
+        <div class="info-box">
+            <strong>Performance:</strong> Unoptimized images, unused code, large bundles, render-blocking resources
+        </div>
+        <div class="info-box">
+            <strong>Accessibility:</strong> Low contrast text, missing alt text, unlabeled form inputs, improper heading order
+        </div>
+        <div class="info-box">
+            <strong>Best Practices:</strong> Using HTTPS, password field types, front-end performance warnings
+        </div>
+        <div class="info-box">
+            <strong>SEO:</strong> Missing meta tags, non-responsive design, robots.txt issues
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>Using Lighthouse Results</h2>
+        <ol>
+            <li><strong>Review Score:</strong> Understand which categories need improvement</li>
+            <li><strong>Prioritize:</strong> Focus on highest-impact opportunities</li>
+            <li><strong>Make Changes:</strong> Implement recommended fixes</li>
+            <li><strong>Re-audit:</strong> Run Lighthouse again to verify improvements</li>
+            <li><strong>Monitor:</strong> Run regularly to prevent regression</li>
+        </ol>
+    </div>
+
+    <script>
+        function showPerformanceTips() {
+            document.getElementById('perf-output').innerHTML = `
+                <strong>Performance Optimization Tips:</strong><br>
+                <br>
+                1. <strong>Image Optimization:</strong> Use modern formats (WebP), compress, lazy load<br>
+                2. <strong>Code Splitting:</strong> Split large bundles, load on-demand<br>
+                3. <strong>Minification:</strong> Minify CSS, JavaScript, HTML<br>
+                4. <strong>Caching:</strong> Set proper cache headers for assets<br>
+                5. <strong>CDN:</strong> Use Content Delivery Network for faster delivery<br>
+                6. <strong>Server-side Rendering:</strong> For faster First Contentful Paint<br>
+                7. <strong>Remove Unused Code:</strong> Use Coverage panel to find and remove dead code<br>
+                8. <strong>Third-party Scripts:</strong> Audit and minimize heavy third-party scripts
+            `;
+        }
+
+        function showScoringInfo() {
+            document.getElementById('scoring-output').innerHTML = `
+                <strong>Lighthouse Scoring System:</strong><br>
+                <br>
+                <span class="score-high">90-100 (Green):</span> Excellent - No immediate action needed<br>
+                <span class="score-medium">50-89 (Orange):</span> Needs Improvement - Fix opportunities<br>
+                <span class="score-low">0-49 (Red):</span> Poor - Urgent improvements needed<br>
+                <br>
+                <strong>Category Weights:</strong><br>
+                • Performance: 40%<br>
+                • Accessibility: 25%<br>
+                • Best Practices: 20%<br>
+                • SEO: 15%<br>
+                <br>
+                <strong>Tips:</strong> Scores vary between runs due to network variations. Run multiple times and take average.
+            `;
+        }
+    </script>
+</body>
+</html>
