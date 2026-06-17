@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sources Panel - JavaScript Debugging Workshop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .demo-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        h3 {
+            color: #555;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 5px 5px 5px 0;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button.secondary {
+            background: #6c757d;
+        }
+        button.secondary:hover {
+            background: #545b62;
+        }
+        input, select {
+            padding: 8px;
+            margin: 5px 5px 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .output {
+            background: #f0f0f0;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            min-height: 30px;
+            white-space: pre-wrap;
+        }
+        .error-output {
+            color: #8a1c1c;
+            background: #fff1f1;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .normal {
+            background: #f5f5f5;
+        }
+        .highlighted {
+            background: #cdeffd;
+            border-color: #3399ff;
+        }
+        .task-card {
+            display: inline-block;
+            width: 200px;
+            margin: 6px;
+            padding: 10px;
+            border: 1px solid #bcccdc;
+            border-radius: 4px;
+            background: #fbfcfd;
+            vertical-align: top;
+            font-size: 13px;
+        }
+        .task-card.done {
+            border-color: #2f855a;
+            background: #f0fff4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sources Panel - JavaScript Debugging Workshop</h1>
+    <p><strong>Instructions:</strong> Open the Sources tab in DevTools. Use the demos below to practice each debugging technique.</p>
+
+    <!-- 1. Step Through Code -->
+    <div class="demo-section">
+        <h2>1. Step Through Code</h2>
+        <p>Set a breakpoint inside <code>stepThroughDemo()</code>. Use <strong>Step Into (F11)</strong> to enter helper functions and <strong>Step Out (Shift+F11)</strong> to return to the caller.</p>
+        <button onclick="stepThroughDemo()">Run Step Demo</button>
+        <div class="output" id="step-output">Output will appear here</div>
+        <p><small>Controls: Resume (F8) · Step Over (F10) · Step Into (F11) · Step Out (Shift+F11)</small></p>
+    </div>
+
+    <!-- 2. Conditional Breakpoint -->
+    <div class="demo-section">
+        <h2>2. Conditional Breakpoint</h2>
+        <p>Set a conditional breakpoint inside <code>processOrders()</code> with condition <code>order.status === 'failed'</code> to pause only on failed orders.</p>
+        <button onclick="processOrders()">Process Orders</button>
+        <div class="output" id="orders-output">Order processing result will appear here.</div>
+        <p><small>Right-click line number → Add conditional breakpoint → enter <code>order.status === 'failed'</code></small></p>
+    </div>
+
+    <!-- 3. Logpoints -->
+    <div class="demo-section">
+        <h2>3. Logpoints</h2>
+        <p>Instead of pausing, add a logpoint inside the loop in <code>processOrders()</code> to log each order without stopping execution.</p>
+        <button onclick="processOrders()">Process Orders</button>
+        <div class="output" id="logpoint-output">Check Console for logpoint output.</div>
+        <p><small>Right-click line number → Add logpoint → enter <code>Order ${order.id}: ${order.status}</code></small></p>
+    </div>
+
+    <!-- 4. Watch Expressions -->
+    <div class="demo-section">
+        <h2>4. Watch Expressions</h2>
+        <p>Set a breakpoint inside <code>calculateCartTotal()</code>. Add watch expressions to monitor values while stepping.</p>
+        <button onclick="runCartCalculation()">Calculate Cart</button>
+        <button class="secondary" onclick="resetCart()">Reset</button>
+        <div class="output" id="cart-output">Cart result will appear here.</div>
+        <p><small>Watch expressions to add: <code>subtotal</code>, <code>discount</code>, <code>finalTotal</code>, <code>couponCode === 'SESSION2'</code></small></p>
+    </div>
+
+    <!-- 5. Call Stack Analysis -->
+    <div class="demo-section">
+        <h2>5. Call Stack Analysis</h2>
+        <p>Set a breakpoint in <code>formatInvoiceNumber()</code>. Use the Call Stack pane to trace back through <code>buildInvoice()</code> → <code>createInvoice()</code>.</p>
+        <button onclick="createInvoice()">Create Invoice</button>
+        <div class="output" id="invoice-output">Invoice result will appear here.</div>
+        <p><small>Click each frame in the Call Stack pane to inspect scope at that level.</small></p>
+    </div>
+
+    <!-- 6. Pause on Exceptions -->
+    <div class="demo-section">
+        <h2>6. Pause on Exceptions</h2>
+
+        <h3>6.1 Caught Exception</h3>
+        <p>Enable <strong>Pause on caught exceptions</strong> in the Breakpoints section, then submit with missing fields. DevTools pauses at the <code>throw</code> line inside <code>validateProfile()</code> even though the error is caught by <code>try…catch</code>.</p>
+        <input id="profile-name" placeholder="Name" value="">
+        <select id="profile-role">
+            <option value="">Choose role</option>
+            <option value="admin">Admin</option>
+            <option value="editor">Editor</option>
+            <option value="viewer">Viewer</option>
+        </select>
+        <button onclick="saveProfile()">Save Profile</button>
+        <div class="error-output" id="profile-output">Validation output will appear here.</div>
+        <p><small>Leave Name or Role empty → click Save → inspect <code>error.message</code> and the call stack while paused.</small></p>
+
+        <h3>6.2 Uncaught Exception</h3>
+        <p>Enable <strong>Pause on uncaught exceptions</strong>, then click the button. The thrown error is <em>not</em> wrapped in a <code>try…catch</code>, so DevTools pauses right at the crash line.</p>
+        <button onclick="testUncaughtException()">Throw Uncaught Exception</button>
+        <div class="error-output" id="uncaught-output">Output will appear here.</div>
+        <p><small>Check the Console after resuming — the unhandled error will also appear there.</small></p>
+    </div>
+
+    <!-- 7. DOM Breakpoints -->
+    <div class="demo-section">
+        <h2>7. Breakpoints on DOM Changes</h2>
+
+        <h3>7.1 Subtree Modifications</h3>
+        <button onclick="domChangeDemo()">Modify DOM</button>
+        <div id="mutation-target" style="background: lightyellow; padding: 10px; margin: 10px 0; border: 1px solid orange;">
+            Original content
+        </div>
+        <p><small>In Elements panel → right-click this div → Break on → Subtree modifications. Then click "Modify DOM".</small></p>
+
+        <h3>7.2 Attribute Changes</h3>
+        <button onclick="attributeChangeDemo()">Change Class</button>
+        <div id="attribute-target" class="box normal" style="padding:10px; margin:10px 0; border:1px solid #999;">
+            Attribute target element
+        </div>
+        <p><small>In Elements panel → right-click this div → Break on → Attribute modifications. Then click "Change Class".</small></p>
+
+        <h3>7.3 Node Removal (Button-triggered)</h3>
+        <button onclick="nodeRemovalDemo()">Remove Element</button>
+        <div id="removal-container" style="padding:10px; margin:10px 0; border:1px solid red; background:#ffeaea;">
+            This element will be removed
+        </div>
+        <p><small>In Elements panel → right-click this div → Break on → Node removal. Then click "Remove Element".</small></p>
+
+        <h3>7.4 Global DOM Removal Intercept</h3>
+        <p>
+            <strong>Problem:</strong> <em>Break on → Node removal</em> only works if you can right-click the element <em>before</em> it is removed.
+            If a node disappears during page load, inside a framework teardown, or from a third-party script, it is gone before you can set the breakpoint.
+        </p>
+        <p><strong>Solution:</strong> Patch <code>Element.prototype.remove</code> to intercept every removal globally — no need to find the element first.</p>
+
+        <div style="display:flex;align-items:center;gap:10px;margin:10px 0;flex-wrap:wrap;">
+            <button id="intercept-toggle-btn" onclick="toggleGlobalRemovalIntercept()"
+                    style="background:#28a745;">Enable Global Removal Intercept</button>
+            <button onclick="removeInterceptTarget()" style="background:#dc3545;">Remove an Element</button>
+            <button class="secondary" onclick="resetInterceptTarget()">Reset Element</button>
+        </div>
+        <div class="output" id="intercept-status">Intercept is OFF — removals will not be caught.</div>
+
+        <div id="removal-container-2" style="padding:10px;margin:10px 0;border:2px dashed purple;background:#f5eeff;">
+            Intercept target — click "Remove an Element" to trigger removal
+        </div>
+
+        <p style="margin-top:14px;"><strong>How it works (runs when you click Enable):</strong></p>
+        <pre style="background:#f0f0f0;padding:10px;border-radius:4px;font-size:13px;overflow-x:auto;margin:0 0 10px">const originalRemove = Element.prototype.remove;
+Element.prototype.remove = function () {
+    console.trace('remove() called on', this);
+    debugger;  // pauses here for every .remove() call
+    return originalRemove.call(this);
+};</pre>
+
+        <div style="background:#fff8e1;border-left:4px solid #ffc107;padding:12px 14px;border-radius:4px;margin-top:10px;">
+            <p style="margin:0 0 8px;"><strong>Note</strong></p>
+            <p style="margin:0 0 6px;">This same technique works directly in the Console or as a Sources Snippet on <em>any</em> page — not just this demo.</p>
+            <p style="margin:0 0 4px;">To intercept only a <strong>specific element</strong> instead of all elements:</p>
+            <pre style="background:#f0f0f0;padding:8px 10px;border-radius:4px;font-size:13px;overflow-x:auto;margin:4px 0 10px">const targetElement       = document.querySelector('.target');
+const originalRemoveMethod = targetElement.remove.bind(targetElement);
+targetElement.remove = function () { debugger; originalRemoveMethod(); };</pre>
+            <p style="margin:0 0 4px;">To remove the global intercept from the Console:</p>
+            <pre style="background:#f0f0f0;padding:8px 10px;border-radius:4px;font-size:13px;overflow-x:auto;margin:4px 0 10px">Element.prototype.remove = originalRemove;</pre>
+            <p style="margin:0 0 4px;">Or use Chrome's built-in Console helpers (no code needed):</p>
+            <pre style="background:#f0f0f0;padding:8px 10px;border-radius:4px;font-size:13px;overflow-x:auto;margin:4px 0 0">debug(Element.prototype.remove);    // enable
+undebug(Element.prototype.remove);  // disable</pre>
+        </div>
+    </div>
+
+    <!-- 8. Event Listener Breakpoints -->
+    <div class="demo-section">
+        <h2>8. Event Listener Breakpoints</h2>
+        <p>Expand <strong>Event Listener Breakpoints</strong> in the Sources sidebar and enable the event you want to intercept. Each sub-section below targets a different event group.</p>
+
+        <h3>8.1 Keyboard — keydown</h3>
+        <p>Enable <strong>Keyboard → keydown</strong>, then type in the field.</p>
+        <input id="search-box" placeholder="Type to trigger keydown">
+        <button class="secondary" id="keyboard-reset">Clear</button>
+        <div class="output" id="search-output">Keyboard events will appear here.</div>
+
+        <h3>8.2 Mouse — click / dblclick / mouseup</h3>
+        <p>Enable <strong>Mouse → click</strong>, <strong>dblclick</strong>, or <strong>mouseup</strong> individually, then interact with the box below.</p>
+        <div id="mouse-target"
+             style="display:inline-block;padding:20px 40px;margin:8px 0;background:#e8f4fd;border:2px solid #3399ff;border-radius:6px;cursor:pointer;user-select:none;">
+            Click · Double-click · Mouse-up here
+        </div>
+        <div class="output" id="mouse-output">Mouse events will appear here.</div>
+
+        <h3>8.3 Mouse — mouseover / mouseenter</h3>
+        <p>Enable <strong>Mouse → mouseover</strong> or <strong>mouseenter</strong>, then hover over the box.</p>
+        <div id="hover-target"
+             style="display:inline-block;padding:20px 40px;margin:8px 0;background:#fff3cd;border:2px solid #ffc107;border-radius:6px;cursor:default;user-select:none;">
+            Hover over me
+        </div>
+        <div class="output" id="hover-output">Hover events will appear here.</div>
+
+        <h3>8.4 Mouse — wheel</h3>
+        <p>Enable <strong>Mouse → wheel</strong>, then scroll inside the box below.</p>
+        <div id="wheel-target"
+             style="height:100px;overflow-y:scroll;padding:10px;margin:8px 0;background:#e9fbe9;border:2px solid #28a745;border-radius:6px;">
+            <p style="margin:0">Scroll inside this box to fire the wheel event.</p>
+            <p>Line 2</p><p>Line 3</p><p>Line 4</p><p>Line 5</p><p>Line 6</p>
+        </div>
+        <div class="output" id="wheel-output">Wheel events will appear here.</div>
+
+        <p><small>All event listener breakpoints are set in: Sources sidebar → Event Listener Breakpoints → expand the relevant group → check the event name.</small></p>
+    </div>
+
+    <!-- 9. XHR / Fetch Breakpoints -->
+    <div class="demo-section">
+        <h2>9. XHR / Fetch Breakpoints</h2>
+        <p>Add an XHR/fetch breakpoint for <code>todos</code> in the debug sidebar, then click the button. DevTools pauses before the request is sent.</p>
+        <button onclick="loadRemoteTodo()">Load Remote Todo</button>
+        <div class="output" id="fetch-output">Remote todo output will appear here.</div>
+        <p><small>Sources sidebar → XHR/fetch Breakpoints → + → type <code>todos</code></small></p>
+    </div>
+
+    <!-- 10. Debugger Statement -->
+    <div class="demo-section">
+        <h2>10. Debugger Statement</h2>
+        <p>Execution will pause at the <code>debugger;</code> statement embedded in the code — no manual breakpoint needed.</p>
+        <button onclick="debuggerDemo()">Run Debugger Statement</button>
+        <div class="output" id="debugger-output">Output will appear here</div>
+        <p><small>Useful for quickly hardcoding a pause during development. Remove before shipping.</small></p>
+    </div>
+
+    <!-- 11. Snippet Practice -->
+    <div class="demo-section">
+        <h2>12. Snippet Practice</h2>
+        <p>Create a Sources Snippet that reads <code>window.debugLabState</code>, prints a table of tasks, and returns the count of completed tasks.</p>
+        <button onclick="exposeDebugState()">Expose Debug State</button>
+        <div class="output" id="snippet-output">Snippet setup output will appear here.</div>
+        <p><small>Sources → Snippets → New snippet → paste the script → Ctrl+Enter to run</small></p>
+        <p>Press Control + O (Windows/Linux) or Command + O (Mac) to open the file search menu.Type the ! character followed immediately by the name of your snippet.Press Enter (or Control + Enter) to instantly run it.</p>
+    </div>
+
+    <script src="./debugging-workshop.js"></script>
+</body>
+</html>
