@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overrides - Workshop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .demo-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h2 { color: #333; margin-top: 0; }
+        h3 { color: #555; }
+        button {
+            padding: 8px 15px;
+            margin: 5px 5px 5px 0;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover { background: #0056b3; }
+        button.secondary { background: #6c757d; }
+        button.secondary:hover { background: #545b62; }
+        .output {
+            background: #f0f0f0;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            min-height: 32px;
+            white-space: pre-wrap;
+            font-size: 13px;
+        }
+
+        /* ── CSS override target ── */
+        /* Participants will override this rule in the Sources panel */
+        .override-card {
+            padding: 20px;
+            margin: 10px 0;
+            background: #e8f4fd;
+            border: 2px solid #3399ff;
+            border-radius: 6px;
+            font-size: 15px;
+            color: #003366;
+        }
+
+        .price-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #007bff;
+            color: white;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+    </style>
+    <link rel="stylesheet" href="./overrides-workshop.css">
+</head>
+<body>
+    <h1>Overrides - Workshop</h1>
+    <p>
+        <strong>Setup first:</strong> Sources panel → <strong>Overrides</strong> tab (in the left sidebar) →
+        <strong>+ Select folder for overrides</strong> → choose any empty folder on your machine → click <strong>Allow</strong>.
+    </p>
+
+    <!-- 1. What Overrides Are -->
+    <div class="demo-section">
+        <h2>1. What Overrides Do</h2>
+        <p>
+            Without Overrides, any edit you make in the Sources panel is lost on the next reload.
+            With Overrides enabled and a folder selected, edits are saved to your local folder and
+            the browser serves your local copy instead of the remote file — even after a reload.
+        </p>
+
+        <div style="background:#f8f9fa;border-left:4px solid #007bff;padding:10px 14px;border-radius:4px;font-size:13px;">
+            <p style="margin:0 0 6px;"><strong>When to use Overrides:</strong></p>
+            <ul style="margin:0;padding-left:18px;">
+                <li>Test a CSS or JS fix on a live site before you have access to the source code.</li>
+                <li>Mock an API response when the backend endpoint is not ready yet.</li>
+                <li>Toggle a feature flag without deploying.</li>
+                <li>Reproduce a bug with a patched version of the file.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 2. CSS Override -->
+    <div class="demo-section">
+        <h2>2. CSS Override</h2>
+        <p>The card below is styled by <code>overrides-workshop.css</code>. Override that file to change its appearance without editing the original.</p>
+
+        <div class="override-card" id="css-override-target">
+            This card is styled by <code>.override-card</code> in <code>overrides-workshop.css</code>.
+            <br><br>
+            <span class="price-tag">₹ 1,299</span>
+        </div>
+
+        <div style="background:#fff3cd;border-left:4px solid #ffc107;padding:10px 14px;border-radius:4px;margin-top:12px;font-size:13px;">
+            <p style="margin:0 0 6px;"><strong>How to override the CSS:</strong></p>
+            <ol style="margin:0;padding-left:18px;">
+                <li>Open the Sources panel → find <code>overrides-workshop.css</code> in the file navigator.</li>
+                <li>Right-click the file → <strong>Save for overrides</strong>. The file gets a purple dot indicator.</li>
+                <li>Edit <code>.override-card</code> — try changing <code>background</code> to <code>#fde8e8</code> and <code>border-color</code> to <code>#dc3545</code>.</li>
+                <li>Press <code>Ctrl+S</code> to save.</li>
+                <li>Reload the page — the new colours persist.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- 3. JS Function Override -->
+    <div class="demo-section">
+        <h2>3. JavaScript Override</h2>
+        <p>
+            The button below calls <code>calculateDiscount()</code> from <code>overrides-workshop.js</code>.
+            Override the JS file to change what the function returns — without touching the HTML.
+        </p>
+        <button onclick="showDiscount()">Calculate Discount</button>
+        <div class="output" id="discount-output">Discount will appear here.</div>
+
+        <div style="background:#fff3cd;border-left:4px solid #ffc107;padding:10px 14px;border-radius:4px;margin-top:12px;font-size:13px;">
+            <p style="margin:0 0 6px;"><strong>How to override the JS:</strong></p>
+            <ol style="margin:0;padding-left:18px;">
+                <li>Sources panel → find <code>overrides-workshop.js</code> → right-click → <strong>Save for overrides</strong>.</li>
+                <li>Find <code>calculateDiscount()</code> and change the return value — e.g. return <code>50</code> instead of <code>10</code>.</li>
+                <li>Save with <code>Ctrl+S</code> and reload.</li>
+                <li>Click <strong>Calculate Discount</strong> — the output now reflects your overridden value.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- 4. API Mock Override -->
+    <div class="demo-section">
+        <h2>4. Mocking an API Response</h2>
+        <p>
+            The button below fetches <code>/api/workshop-products</code> — a route that does not exist on this server.
+            Use Overrides to create a local file that intercepts the request and returns mock JSON.
+        </p>
+        <button onclick="loadProducts()">Load Products</button>
+        <div class="output" id="products-output">Products will appear here.</div>
+
+        <div style="background:#fff3cd;border-left:4px solid #ffc107;padding:10px 14px;border-radius:4px;margin-top:12px;font-size:13px;">
+            <p style="margin:0 0 6px;"><strong>How to mock the API:</strong></p>
+            <ol style="margin:0;padding-left:18px;">
+                <li>In your override folder, mirror the URL path:
+                    create <code>&lt;override-folder&gt;/&lt;hostname&gt;/api/workshop-products</code> (no extension).</li>
+                <li>Paste this JSON into the file:
+                    <pre style="background:#f0f0f0;padding:6px 8px;border-radius:4px;margin:6px 0;font-size:12px;">[
+  { "id": 1, "name": "Notebook", "price": 120 },
+  { "id": 2, "name": "Pen Set",  "price": 80  }
+]</pre>
+                </li>
+                <li>Reload and click <strong>Load Products</strong> — the browser serves your local file instead of hitting the server.</li>
+            </ol>
+            <p style="margin:8px 0 0;"><strong>Why this matters:</strong> you can develop and test UI behavior against realistic API data before the backend endpoint exists.</p>
+        </div>
+    </div>
+
+    <!-- 5. Feature Flag Override -->
+    <div class="demo-section">
+        <h2>5. Feature Flag Override</h2>
+        <p>
+            The current config in <code>overrides-workshop.js</code> has <code>darkMode: false</code>.
+            Override the file to flip it to <code>true</code> and see the panel below change.
+        </p>
+        <button onclick="checkFeatureFlags()">Read Feature Flags</button>
+        <div class="output" id="flags-output">Current feature flag state will appear here.</div>
+
+        <div id="dark-mode-preview" style="display:none;padding:16px;margin:10px 0;background:#1e1e1e;color:#d4d4d4;border-radius:6px;font-size:13px;">
+            Dark mode preview is active — this element is shown because <code>darkMode</code> is <code>true</code>.
+        </div>
+
+        <div style="background:#fff3cd;border-left:4px solid #ffc107;padding:10px 14px;border-radius:4px;margin-top:12px;font-size:13px;">
+            <p style="margin:0 0 6px;"><strong>How to enable the feature flag:</strong></p>
+            <ol style="margin:0;padding-left:18px;">
+                <li>Open the overridden <code>overrides-workshop.js</code>.</li>
+                <li>Find <code>const workshopConfig</code> and change <code>darkMode: false</code> to <code>darkMode: true</code>.</li>
+                <li>Save and reload.</li>
+                <li>Click <strong>Read Feature Flags</strong> — the dark panel appears.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- 6. Verifying and Disabling -->
+    <div class="demo-section">
+        <h2>6. Verifying and Removing Overrides</h2>
+
+        <h3>How to tell an override is active</h3>
+        <ul>
+            <li>The file in Sources shows a <strong>purple dot</strong> icon next to its name.</li>
+            <li>The Overrides tab lists all currently active override files.</li>
+        </ul>
+
+        <h3>How to remove a specific override</h3>
+        <ol>
+            <li>Delete the file from your override folder on disk.</li>
+            <li>Reload — the browser fetches the original remote file again.</li>
+        </ol>
+
+        <h3>How to disable all overrides at once</h3>
+        <ol>
+            <li>Sources → Overrides tab → uncheck <strong>Enable Local Overrides</strong>.</li>
+            <li>All overrides are suspended (files still exist in the folder).</li>
+            <li>Re-check to reactivate them.</li>
+        </ol>
+
+        <div style="background:#f8d7da;border-left:4px solid #dc3545;padding:10px 14px;border-radius:4px;margin-top:10px;font-size:13px;">
+            <p style="margin:0;"><strong>Warning:</strong> Overrides stay active across browser restarts. Always check the Overrides tab before debugging a "strange" page behavior — a forgotten override might be the cause.</p>
+        </div>
+    </div>
+
+    <script src="./overrides-workshop.js"></script>
+</body>
+</html>

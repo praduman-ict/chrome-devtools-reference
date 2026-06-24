@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coverage Panel - Workshop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .demo-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h2 { color: #333; margin-top: 0; }
+        h3 { color: #555; }
+        button {
+            padding: 8px 15px;
+            margin: 5px 5px 5px 0;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover { background: #0056b3; }
+        button.secondary { background: #6c757d; }
+        button.secondary:hover { background: #545b62; }
+        .output {
+            background: #f0f0f0;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            min-height: 32px;
+            white-space: pre-wrap;
+            font-size: 13px;
+        }
+
+        /* ── CSS coverage targets ── */
+        /* This rule is used — applied to .used-box */
+        .used-box {
+            padding: 14px;
+            margin: 8px 0;
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 4px;
+        }
+        /* This rule is NEVER applied to any element on this page */
+        .unused-box-style {
+            padding: 14px;
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            border-radius: 4px;
+            font-style: italic;
+        }
+        /* Used only when .highlight class is toggled on */
+        .highlight-active {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 14px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        /* Never applied — always unused */
+        .dark-theme-card {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 6px;
+        }
+        /* Never applied */
+        .admin-only-banner {
+            background: #6f42c1;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Coverage Panel - Workshop</h1>
+    <p>
+        <strong>Instructions:</strong> Open DevTools → three-dot menu (⋮) → <strong>More tools</strong> → <strong>Coverage</strong>.
+        The Coverage panel docks at the bottom. Keep it open throughout this session.
+    </p>
+
+    <!-- 1. How to Open and Record -->
+    <div class="demo-section">
+        <h2>1. Opening Coverage and Recording Modes</h2>
+        <p>Coverage has two recording modes. Understanding which to use changes what you see.</p>
+
+        <div style="background:#f8f9fa;border-left:4px solid #007bff;padding:10px 14px;border-radius:4px;margin-bottom:12px;font-size:13px;">
+            <p style="margin:0 0 6px;"><strong>Mode 1 — Reload and record (📄 icon):</strong></p>
+            <p style="margin:0 0 10px;">Reloads the page and records from the very first line that executes. Best for seeing what code runs at page load before any user interaction.</p>
+            <p style="margin:0 0 6px;"><strong>Mode 2 — Start recording without reloading (⏺ icon):</strong></p>
+            <p style="margin:0;">Records while you interact. Code that only runs on button clicks or events appears here. Use this after page load to see how much additional code your interactions cover.</p>
+        </div>
+
+        <button onclick="onLoadFunction()">Run On-Load Demo</button>
+        <div class="output" id="recording-output">Click the button above, then check Coverage — this function's lines should turn green.</div>
+        <p><small>
+            Try: click the ⏺ record button in Coverage, click the button above, then stop recording.
+            Open <code>coverage-workshop.js</code> in the Coverage results and look at which lines are green.
+        </small></p>
+    </div>
+
+    <!-- 2. Used vs Unused Code -->
+    <div class="demo-section">
+        <h2>2. Used vs Unused Code</h2>
+        <p>
+            Functions that are defined in the file but never called stay <strong style="color:#dc3545;">red</strong> in Coverage.
+            Functions that are called at least once turn <strong style="color:#28a745;">green</strong>.
+        </p>
+        <button onclick="usedFunctionA()">Call usedFunctionA()</button>
+        <button onclick="usedFunctionB()">Call usedFunctionB()</button>
+        <div class="output" id="used-output">Call the functions above. Their lines will turn green in Coverage.</div>
+        <p><small>
+            <code>unusedFunctionA()</code> and <code>unusedFunctionB()</code> are defined in the JS file but have no button.
+            After recording, click the file name in Coverage results — those functions stay red.
+        </small></p>
+    </div>
+
+    <!-- 3. Conditional Paths -->
+    <div class="demo-section">
+        <h2>3. Conditional Code Paths</h2>
+        <p>
+            If you only trigger the <code>if</code> branch, the <code>else</code> branch lines stay red.
+            Only by clicking both buttons do you cover 100% of the conditional.
+        </p>
+        <button onclick="conditionalDemo(true)">Trigger IF branch</button>
+        <button onclick="conditionalDemo(false)">Trigger ELSE branch</button>
+        <div class="output" id="conditional-output">Click one button, check Coverage. Then click the other and re-check.</div>
+        <p><small>
+            Real-world implication: high coverage % does not mean all logic is tested — only that the lines were
+            <em>executed</em>. A test suite that only exercises the happy path will miss the <code>else</code> branches.
+        </small></p>
+    </div>
+
+    <!-- 4. Feature Flag Code -->
+    <div class="demo-section">
+        <h2>4. Feature Flag Code</h2>
+        <p>
+            All three feature flags below are set to <code>false</code>.
+            The functions behind them (<code>enableDarkMode</code>, <code>enableBetaSearch</code>, <code>enableAdminPanel</code>)
+            are defined in the file but can never be reached — they will always be red in Coverage.
+        </p>
+        <button onclick="runFeatureCheck()">Run Feature Check</button>
+        <div class="output" id="feature-output">The output will always be "all features disabled" — the flag code is unreachable.</div>
+        <p><small>
+            This is one of the most common sources of unused JS in production apps:
+            shipped feature-flag code that is never enabled. Coverage surfaces it immediately.
+        </small></p>
+    </div>
+
+    <!-- 5. CSS Coverage -->
+    <div class="demo-section">
+        <h2>5. CSS Coverage</h2>
+        <p>
+            Coverage tracks CSS rules too. Rules applied to elements on the page turn green.
+            Rules that exist in the stylesheet but match no element stay red.
+        </p>
+
+        <div class="used-box">
+            This element uses <code>.used-box</code> — that CSS rule will be green in Coverage.
+        </div>
+
+        <p>The classes <code>.unused-box-style</code>, <code>.dark-theme-card</code>, and <code>.admin-only-banner</code>
+        are defined in the <code>&lt;style&gt;</code> block above but applied to no element — they stay red.</p>
+
+        <button onclick="toggleHighlight()">Toggle .highlight-active class</button>
+        <div id="highlight-target" style="padding:14px;border:2px solid #999;border-radius:4px;margin:8px 0;">
+            This element has no highlight class yet. Click the button to apply <code>.highlight-active</code>.
+        </div>
+        <p><small>
+            After clicking the toggle: <code>.highlight-active</code> becomes green in Coverage because it is now applied.
+            Click again to remove it — in Coverage it stays green for the rest of the recording session because it <em>was</em> used.
+        </small></p>
+    </div>
+
+    <!-- 6. Reading the Coverage Results -->
+    <div class="demo-section">
+        <h2>6. Reading the Coverage Table</h2>
+        <p>After stopping a recording, the Coverage table shows one row per file. Click any filename to open the source with inline red/green highlighting.</p>
+
+        <div style="background:#f8f9fa;border-left:4px solid #28a745;padding:10px 14px;border-radius:4px;font-size:13px;">
+            <p style="margin:0 0 6px;"><strong>Columns:</strong></p>
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <tr><th style="text-align:left;padding:4px 8px;background:#e9ecef;">Column</th><th style="text-align:left;padding:4px 8px;background:#e9ecef;">What it shows</th></tr>
+                <tr><td style="padding:4px 8px;">URL</td><td style="padding:4px 8px;">File path</td></tr>
+                <tr><td style="padding:4px 8px;">Type</td><td style="padding:4px 8px;">CSS or JavaScript</td></tr>
+                <tr><td style="padding:4px 8px;">Total Bytes</td><td style="padding:4px 8px;">Full file size</td></tr>
+                <tr><td style="padding:4px 8px;">Unused Bytes</td><td style="padding:4px 8px;">Code loaded but never executed — sort by this to find the biggest waste</td></tr>
+                <tr><td style="padding:4px 8px;">Usage bar</td><td style="padding:4px 8px;">Red = unused, green = used, proportional to bytes</td></tr>
+            </table>
+        </div>
+
+        <button onclick="runAllDemos()">Run All Demos at Once</button>
+        <div class="output" id="all-output">Runs every demo function so you can compare covered vs uncovered code in one recording.</div>
+    </div>
+
+    <script src="./coverage-workshop.js"></script>
+</body>
+</html>

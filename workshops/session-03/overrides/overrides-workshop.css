@@ -1,0 +1,26 @@
+/* overrides-workshop.css
+   ─────────────────────────────────────────────────────────────────────────────
+   Participants override this file via Sources → Save for overrides.
+   Try changing .override-card background and border-color to see
+   the card update after a reload. */
+
+.override-card {
+    padding: 20px;
+    margin: 10px 0;
+    background: #e8f4fd;       /* Override: try #fde8e8 */
+    border: 2px solid #3399ff; /* Override: try #dc3545 */
+    border-radius: 6px;
+    font-size: 15px;
+    color: #003366;             /* Override: try #8b0000 */
+    transition: background 0.3s;
+}
+
+.price-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #007bff;       /* Override: try #dc3545 */
+    color: white;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 14px;
+}

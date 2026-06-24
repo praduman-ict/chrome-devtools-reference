@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Panel - Workshop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .demo-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        h3 {
+            color: #555;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 5px 5px 5px 0;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover { background: #0056b3; }
+        button.secondary {
+            background: #6c757d;
+        }
+        button.secondary:hover { background: #545b62; }
+        button.danger {
+            background: #dc3545;
+        }
+        button.danger:hover { background: #a71d2a; }
+        input, select {
+            padding: 8px;
+            margin: 5px 5px 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .output {
+            background: #f0f0f0;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            min-height: 32px;
+            white-space: pre-wrap;
+            font-size: 13px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 6px;
+        }
+        .badge-200 { background: #d4edda; color: #155724; }
+        .badge-404 { background: #f8d7da; color: #721c24; }
+        .badge-500 { background: #f8d7da; color: #721c24; }
+        .badge-pending { background: #fff3cd; color: #856404; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        th {
+            background: #e9ecef;
+            padding: 7px 10px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+        }
+        td {
+            padding: 6px 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        tr:last-child td { border-bottom: none; }
+    </style>
+</head>
+<body>
+    <h1>Network Panel - Workshop</h1>
+    <p><strong>Instructions:</strong> Open the <strong>Network</strong> tab in DevTools before clicking any button. Keep it open throughout the session.</p>
+
+    <!-- 1. Recording, Preserve Log, Clear -->
+    <div class="demo-section">
+        <h2>1. Recording, Preserve Log, and Clear</h2>
+        <p>
+            The Network panel records all requests automatically when open.
+            <strong>Preserve log</strong> keeps previous requests visible after a page reload or navigation.
+            <strong>Clear</strong> removes all rows without stopping recording.
+        </p>
+        <button onclick="makeBasicRequest()">Make a Request</button>
+        <button class="secondary" onclick="reloadPage()">Reload Page</button>
+        <div class="output" id="recording-output">Click "Make a Request" and watch a row appear in the Network panel.</div>
+        <p><small>
+            Try: enable <strong>Preserve log</strong> in the Network toolbar, click Reload, and confirm previous requests are still visible.
+            Then disable it and reload again — the list clears on navigation.
+        </small></p>
+    </div>
+
+    <!-- 2. Request Table Columns -->
+    <div class="demo-section">
+        <h2>2. Request Table Columns</h2>
+        <p>Each row in the Network table has key columns. Click the buttons below and observe what each column shows.</p>
+        <button onclick="fetchPost(1)">Fetch Post (200)</button>
+        <button onclick="fetch404()">Fetch Missing (404)</button>
+        <button onclick="fetchLargePayload()">Fetch Large Payload</button>
+        <div class="output" id="columns-output">Responses will appear here.</div>
+        <p><small>
+            Columns to observe:
+            <strong>Name</strong> (URL),
+            <strong>Status</strong> (200/404),
+            <strong>Type</strong> (fetch/xhr),
+            <strong>Initiator</strong> (script line),
+            <strong>Size</strong> (bytes transferred),
+            <strong>Time</strong> (total duration).
+        </small></p>
+    </div>
+
+    <!-- 3. Headers, Payload, Preview, Response, Timing -->
+    <div class="demo-section">
+        <h2>3. Request Detail Tabs</h2>
+        <p>Click a request in the Network panel to open its detail pane. Each tab below covers a different part of the request.</p>
+
+        <h3>3.1 Headers</h3>
+        <button onclick="fetchWithCustomHeaders()">Send Request with Custom Headers</button>
+        <div class="output" id="headers-output">Click the request in Network → Headers tab to see Request Headers, Response Headers, and General info.</div>
+
+        <h3>3.2 Payload</h3>
+        <button onclick="sendPostRequest()">Send POST with Body</button>
+        <div class="output" id="payload-output">Click the request → Payload tab to see the JSON body sent to the server.</div>
+
+        <h3>3.3 Preview</h3>
+        <button onclick="fetchForPreview()">Fetch JSON (Preview)</button>
+        <div class="output" id="preview-output">Click the request → Preview tab to see the formatted JSON tree.</div>
+
+        <h3>3.4 Response</h3>
+        <button onclick="fetchForResponse()">Fetch Raw Response</button>
+        <div class="output" id="response-output">Click the request → Response tab to see the raw response body text.</div>
+
+        <h3>3.5 Timing</h3>
+        <button onclick="fetchForTiming()">Fetch (Check Timing)</button>
+        <div class="output" id="timing-output">Click the request → Timing tab to see Stalled, DNS, Connection, SSL, TTFB, and Content Download breakdown.</div>
+    </div>
+
+    <!-- 4. XHR vs Fetch -->
+    <div class="demo-section">
+        <h2>4. XHR vs Fetch</h2>
+        <p>Both XHR and Fetch appear under the <strong>Fetch/XHR</strong> filter but are different APIs. Compare them side by side in the Network panel.</p>
+        <button onclick="makeFetchRequest()">Make Fetch Request</button>
+        <button onclick="makeXHRRequest()">Make XHR Request</button>
+        <div class="output" id="xhr-fetch-output">Both requests will appear in the Network panel under the Fetch/XHR filter.</div>
+        <p><small>
+            In the Network panel: click the <strong>Fetch/XHR</strong> filter button to isolate these requests.
+            Check the <strong>Type</strong> column — Fetch shows as <code>fetch</code>, XHR shows as <code>xhr</code>.
+        </small></p>
+    </div>
+
+    <!-- 5. Filtering by Type -->
+    <div class="demo-section">
+        <h2>5. Filtering by Resource Type</h2>
+        <p>The filter bar at the top of the Network panel lets you show only certain resource types. Trigger multiple types and then filter them.</p>
+        <button onclick="loadScript()">Load Script (JS)</button>
+        <button onclick="loadStylesheet()">Load Stylesheet (CSS)</button>
+        <button onclick="loadImage()">Load Image (Img)</button>
+        <button onclick="makeFetchRequest()">Make API Call (Fetch/XHR)</button>
+        <div class="output" id="filter-type-output">Load a few resources, then use the type filter buttons in the Network panel toolbar.</div>
+        <p><small>
+            Filter buttons: <strong>All</strong> · <strong>Fetch/XHR</strong> · <strong>JS</strong> · <strong>CSS</strong> · <strong>Img</strong> · <strong>Media</strong> · <strong>Font</strong> · <strong>Doc</strong> · <strong>WS</strong> · <strong>Other</strong>.
+            Click multiple buttons to combine filters.
+        </small></p>
+    </div>
+
+    <!-- 6. Advanced Filters -->
+    <div class="demo-section">
+        <h2>6. Advanced Filter Queries</h2>
+        <p>Type filter expressions directly into the Network filter input to narrow requests by status, size, domain, or header.</p>
+        <button onclick="fetch404()">Trigger a 404</button>
+        <button onclick="fetchLargePayload()">Trigger Large Response</button>
+        <button onclick="makeFetchRequest()">Trigger a Fetch</button>
+        <div class="output" id="advanced-filter-output">Trigger a few requests, then try the filter queries listed below.</div>
+
+        <div style="background:#f8f9fa;border-left:4px solid #007bff;padding:10px 14px;border-radius:4px;margin-top:10px;font-size:13px;">
+            <p style="margin:0 0 6px;"><strong>Try these in the Network filter input:</strong></p>
+            <table>
+                <tr><th>Query</th><th>What it shows</th></tr>
+                <tr><td><code>status-code:404</code></td><td>Only 404 responses</td></tr>
+                <tr><td><code>status-code:200</code></td><td>Only successful responses</td></tr>
+                <tr><td><code>resource-type:fetch</code></td><td>Only Fetch API requests</td></tr>
+                <tr><td><code>resource-type:xhr</code></td><td>Only XHR requests</td></tr>
+                <tr><td><code>larger-than:1k</code></td><td>Responses larger than 1 KB</td></tr>
+                <tr><td><code>larger-than:10k</code></td><td>Responses larger than 10 KB</td></tr>
+                <tr><td><code>domain:jsonplaceholder.typicode.com</code></td><td>Requests to this domain only</td></tr>
+                <tr><td><code>-domain:jsonplaceholder.typicode.com</code></td><td>Exclude that domain (negative filter)</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- 7. Network Throttling -->
+    <div class="demo-section">
+        <h2>7. Network Throttling and Offline Mode</h2>
+        <p>Use the throttle dropdown in the Network toolbar to simulate slow connections and test how the page behaves under degraded conditions.</p>
+        <button onclick="fetchForThrottle()">Fetch (observe timing change)</button>
+        <button onclick="fetchMultipleForThrottle()">Fetch Multiple (observe waterfall)</button>
+        <div class="output" id="throttle-output">Set throttle before clicking, then compare request timings.</div>
+
+        <div style="background:#fff3cd;border-left:4px solid #ffc107;padding:10px 14px;border-radius:4px;margin-top:10px;font-size:13px;">
+            <p style="margin:0 0 6px;"><strong>How to throttle:</strong></p>
+            <p style="margin:0 0 4px;">Network toolbar → throttle dropdown (default: <em>No throttling</em>) → choose a profile:</p>
+            <table>
+                <tr><th>Profile</th><th>Download</th><th>Latency</th></tr>
+                <tr><td>Slow 3G</td><td>400 KB/s</td><td>400 ms</td></tr>
+                <tr><td>Fast 3G</td><td>1.6 MB/s</td><td>50 ms</td></tr>
+                <tr><td>Offline</td><td>0</td><td>—</td></tr>
+            </table>
+            <p style="margin:8px 0 0;">Try <strong>Offline</strong> mode to see requests fail. Remember to set it back to <em>No throttling</em> after.</p>
+        </div>
+    </div>
+
+    <!-- 8. Request Blocking -->
+    <div class="demo-section">
+        <h2>8. Request Blocking</h2>
+        <p>Block specific URLs or patterns to test how the application handles missing resources or failed API calls.</p>
+        <button onclick="fetchBlockableRequest()">Fetch Blockable API</button>
+        <button onclick="loadBlockableImage()">Load Blockable Image</button>
+        <div class="output" id="blocking-output">Click a button. Then follow the setup below and click again to see the request blocked.</div>
+        <div id="blockable-image-container"></div>
+
+        <div style="background:#f8f9fa;border-left:4px solid #dc3545;padding:10px 14px;border-radius:4px;margin-top:10px;font-size:13px;">
+            <p style="margin:0 0 6px;"><strong>How to block a request:</strong></p>
+            <ol style="margin:0;padding-left:18px;">
+                <li>Network panel → three-dot menu (⋮) → <strong>Request blocking</strong></li>
+                <li>Check <strong>Enable request blocking</strong></li>
+                <li>Click <strong>+</strong> and enter a pattern:
+                    <code>todos/5</code> to block the API, or
+                    <code>placeholder</code> to block the image
+                </li>
+                <li>Click the button again — the request will fail with a net::ERR_BLOCKED_BY_CLIENT error</li>
+                <li>The app output shows the error it received</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- 9. Timing Analysis and TTFB -->
+    <div class="demo-section">
+        <h2>9. Timing Analysis and TTFB</h2>
+        <p>
+            The Timing tab breaks down every phase of a request.
+            <strong>TTFB</strong> (Time to First Byte) is the time from the request being sent until the first byte of the response arrives — it reflects server processing time.
+        </p>
+        <button onclick="fetchForTimingAnalysis()">Fetch (Inspect Timing)</button>
+        <button onclick="fetchMultipleForWaterfall()">Fetch Multiple (Waterfall)</button>
+        <div class="output" id="timing-analysis-output">Click a request in the Network panel, then open the Timing tab.</div>
+
+        <div style="background:#f8f9fa;border-left:4px solid #28a745;padding:10px 14px;border-radius:4px;margin-top:10px;font-size:13px;">
+            <p style="margin:0 0 6px;"><strong>Timing breakdown:</strong></p>
+            <table>
+                <tr><th>Phase</th><th>What it means</th></tr>
+                <tr><td>Queued / Stalled</td><td>Browser waiting before it could send the request</td></tr>
+                <tr><td>DNS Lookup</td><td>Resolving the domain name to an IP address</td></tr>
+                <tr><td>Initial connection</td><td>TCP handshake with the server</td></tr>
+                <tr><td>SSL</td><td>TLS/HTTPS negotiation</td></tr>
+                <tr><td>Request sent</td><td>Time to upload the request headers and body</td></tr>
+                <tr><td><strong>Waiting (TTFB)</strong></td><td><strong>Server processing time — the key metric for slow APIs</strong></td></tr>
+                <tr><td>Content download</td><td>Time to receive the full response body</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- 10. Copy as cURL and Replay -->
+    <div class="demo-section">
+        <h2>10. Copy as cURL</h2>
+        <p>Any request in the Network panel can be exported as a <code>curl</code> command to replay from a terminal, share as a reproduction, or test with modified headers.</p>
+        <button onclick="fetchForCurl()">Make a Request to Copy</button>
+        <div class="output" id="curl-output">After the request appears in Network, right-click it → Copy → Copy as cURL (bash).</div>
+        <p><small>
+            The copied command includes the full URL, method, headers, and body.
+            Paste it into a Linux/macOS terminal to replay the exact same request outside the browser.
+        </small></p>
+    </div>
+
+    <!-- 11. Disable Cache -->
+    <div class="demo-section">
+        <h2>11. Disable Cache</h2>
+        <p>
+            When DevTools is open, you can disable the browser cache so every reload fetches fresh resources from the server.
+            This is essential when testing changes that might be masked by a cached response.
+        </p>
+        <button onclick="fetchCacheable()">Fetch Cacheable Resource</button>
+        <button onclick="fetchCacheable()">Fetch Again (observe from cache)</button>
+        <div class="output" id="cache-output">Click twice. The second response may show "from disk cache" in the Size column.</div>
+        <p><small>
+            Enable: Network toolbar → Settings gear (⚙) → <strong>Disable cache (while DevTools is open)</strong>.
+            Then reload — every request hits the network, and the Size column shows actual transferred bytes.
+        </small></p>
+    </div>
+
+    <!-- 12. Waterfall and Multiple Requests -->
+    <div class="demo-section">
+        <h2>12. Waterfall — Parallel vs Sequential Loading</h2>
+        <p>The waterfall column visualises when each request started and how long it took. Parallel requests run simultaneously and finish faster than sequential ones.</p>
+        <button onclick="loadParallel()">Load in Parallel</button>
+        <button onclick="loadSequential()">Load Sequentially</button>
+        <div class="output" id="waterfall-output">Compare the total time between parallel and sequential loading in the waterfall.</div>
+        <p><small>
+            After running both, look at the waterfall column in the Network panel.
+            Parallel requests overlap; sequential ones form a chain where each starts after the previous finishes.
+        </small></p>
+    </div>
+
+    <script src="./network-workshop.js"></script>
+</body>
+</html>
